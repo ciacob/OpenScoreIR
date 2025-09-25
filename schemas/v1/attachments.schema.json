@@ -1,0 +1,73 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://ciacob.github.io/OpenScoreIR/schemas/v1/attachments.schema.json",
+    "$defs": {
+        "AttachmentParam": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "enum",
+                        "string",
+                        "int",
+                        "number",
+                        "bool"
+                    ]
+                },
+                "default": {},
+                "values": {}
+            },
+            "required": [
+                "kind"
+            ],
+            "additionalProperties": true
+        },
+        "AttachmentDef": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "hosts": {
+                    "type": "array",
+                    "items": {
+                        "enum": [
+                            "measures",
+                            "events",
+                            "pitches"
+                        ]
+                    }
+                },
+                "params": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/$defs/AttachmentParam"
+                    }
+                }
+            },
+            "required": [
+                "name",
+                "hosts"
+            ],
+            "additionalProperties": false
+        },
+        "AttachmentLibrary": {
+            "type": "object",
+            "properties": {
+                "attachments": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/$defs/AttachmentDef"
+                    }
+                }
+            },
+            "required": [
+                "attachments"
+            ],
+            "additionalProperties": true
+        }
+    }
+}

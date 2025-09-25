@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ciacob.github.io/OpenScoreIR/schemas/v1/score.schema.json",
+  "title": "OpenScoreIR — Score",
+  "$defs": {
+    "Measure": {
+      "type": "object",
+      "required": [
+        "duration"
+      ],
+      "properties": {
+        "timeSignature": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "duration": {
+          "$ref": "./common.schema.json#/$defs/Fraction"
+        },
+        "barline": {
+          "enum": [
+            "normal",
+            "suggested",
+            "none",
+            "section",
+            "final",
+            "final-variation"
+          ]
+        },
+        "number": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "measureKind": {
+          "enum": [
+            "regular",
+            "pickup",
+            "final"
+          ],
+          "default": "regular"
+        },
+        "printNumber": {
+          "type": "boolean",
+          "default": true
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AttachmentInstance"
+          }
+        }
+      },
+      "unevaluatedProperties": false
+    }
+  },
+  "type": "object",
+  "properties": {
+    "scoreInfo": {
+      "$ref": "./common.schema.json#/$defs/ScoreInfo"
+    },
+    "musicSpans": {
+      "$ref": "./events.schema.json#/$defs/MusicSpans"
+    },
+    "$definitions": {
+      "$ref": "./attachments.schema.json#/$defs/AttachmentLibrary"
+    }
+  }
+}

@@ -1,0 +1,145 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://ciacob.github.io/OpenScoreIR/schemas/v1/events.schema.json",
+    "$defs": {
+        "Event": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "regular",
+                        "grace",
+                        "percussion"
+                    ],
+                    "default": "regular"
+                },
+                "duration": {
+                    "$ref": "./common.schema.json#/$defs/Fraction"
+                },
+                "pitches": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 127
+                    }
+                },
+                "notes": {
+                    // todo
+                },
+                "noteSymbol": {
+                    // todo
+                },
+                "attachments": {
+                    // todo
+                },
+                "midiOuts": {
+                    // todo
+                },
+                "useSlash": { "type":"boolean" }, "useSlur": { "type":"boolean" },
+                "stealNext": { "type":"boolean" },
+                "setId": { "$ref": "./common.schema.json#/$defs/Uuid" },
+                "strikes": { "type":"array","items":{"type":"string"} }
+            },
+            "required": [
+                "duration"
+            ]
+        },
+        "EventGroup": {
+            "type": "object",
+            "properties": {
+                // todo
+            }
+        },
+        "MusicSpans": {
+            "type": "object",
+            "patternProperties": {
+                "^[a-f0-9-]{36}$": {
+                    "type": "object",
+                    "properties": {
+                        "kind": {
+                            "enum": [
+                                "regular",
+                                "multiRest"
+                            ],
+                            "default": "regular"
+                        },
+                        "part": {
+                            "$ref": "./common.schema.json#/$defs/Uuid"
+                        },
+                        "measure": {
+                            "$ref": "./common.schema.json#/$defs/Uuid"
+                        },
+                        "events": {
+                            "type": "array",
+                            "items": {
+                                "oneOf": [
+                                    {
+                                        "$ref": "#/$defs/Event"
+                                    },
+                                    {
+                                        "$ref": "#/$defs/EventGroup"
+                                    }
+                                ]
+                            }
+                        },
+                        "fromMeasure": {
+                            "$ref": "./common.schema.json#/$defs/Uuid"
+                        },
+                        "toMeasure": {
+                            "$ref": "./common.schema.json#/$defs/Uuid"
+                        }
+                    },
+                    "required": [
+                        "part"
+                    ],
+                    "allOf": [
+                        {
+                            "if": {
+                                "properties": {
+                                    "kind": {
+                                        "const": "multiRest"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "required": [
+                                    "fromMeasure",
+                                    "toMeasure"
+                                ],
+                                "not": {
+                                    "required": [
+                                        "events",
+                                        "measure"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "kind": {
+                                        "const": "regular"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "required": [
+                                    "events",
+                                    "measure"
+                                ],
+                                "not": {
+                                    "required": [
+                                        "fromMeasure",
+                                        "toMeasure"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "unevaluatedProperties": false
+        }
+    }
+}
