@@ -21,6 +21,19 @@
             "type": "string",
             "format": "uuid"
         },
+        "Uuids": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/Uuid"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "MidiValue": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 128
+        },
         "FractionString": {
             "type": "string",
             "pattern": "^-?\\d+\\/([1-9]\\d*)$"
@@ -63,165 +76,278 @@
                 }
             ]
         },
-        "HostKind": {
-            "type": "string",
-            "enum": [
-                "measures",
-                "events",
-                "pitches"
-            ]
-        },
-        "HostTypes": {
-            "type": "array",
-            "minItems": 1,
-            "items": {
-                "enum": {
-                    "$ref": "#/$defs/HostKind"
-                }
-            }
-        },
-        "HostFilter": {
+        "NoteInstance": {
             "type": "object",
             "properties": {
-                "baseType": {
+                "step": {
                     "type": "string",
                     "enum": [
-                        "measures",
-                        "events",
-                        "pitches"
+                        "A",
+                        "B",
+                        "C",
+                        "D",
+                        "E",
+                        "F",
+                        "G"
                     ]
                 },
-                "filter": {
-                    "type": "object",
-                    "properties": {
-                        "kind": {
-                            "type": "string",
-                            "enum": [
-                                "comparison",
-                                "function"
-                            ],
-                            "default": "comparison"
-                        },
-                        "source": {
-                            "type": "string"
-                        },
-                        "operator": {
-                            "type": "string",
-                            "enum": [
-                                "is",
-                                "isNot",
-                                "startsWith",
-                                "endsWith",
-                                "includes",
-                                "doesNotInclude",
-                                "greaterThan",
-                                "lessThan"
-                            ]
-                        },
-                        "value": {
-                            "oneOf": [
-                                "string",
-                                "number",
-                                "boolean"
-                            ]
-                        }
-                    },
-                    "required": [
-                        "source",
-                        "operator",
-                        "value"
+                "alteration": {
+                    "type": "number",
+                    "minimum": -2,
+                    "maximum": 2
+                },
+                "octave": {
+                    "type": "number",
+                    "minimum": -1,
+                    "maximum": 10
+                }
+            },
+            "required": [
+                "step",
+                "octave"
+            ],
+            "additionalProperties": false
+        },
+        "NoteSymbol": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "whole",
+                        "half",
+                        "quarter",
+                        "eight",
+                        "sixteenth",
+                        "thirty-second",
+                        "sixty-fourth"
                     ]
+                },
+                "numDots": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 3
+                }
+            },
+            "required": [
+                "type"
+            ]
+        },
+        "Measure": {
+            "type": "object",
+            "required": [
+                "duration"
+            ],
+            "properties": {
+                "timeSignature": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                },
+                "duration": {
+                    "$ref": "#/$defs/Fraction"
+                },
+                "barline": {
+                    "enum": [
+                        "normal",
+                        "suggested",
+                        "none",
+                        "section",
+                        "final",
+                        "final-variation"
+                    ]
+                },
+                "number": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "measureKind": {
+                    "enum": [
+                        "regular",
+                        "pickup",
+                        "final"
+                    ],
+                    "default": "regular"
+                },
+                "printNumber": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "attachments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/AttachableInstance"
+                    }
+                }
+            },
+            "unevaluatedProperties": false
+        },
+        "PartDefinition": {
+            "type": "object",
+            "properties": {
+                "partName": {
+                    "type": "string"
+                },
+                "partAbbrev": {
+                    "type": "string"
+                },
+                "staffType": {
+                    "type": "string",
+                    "enum": [
+                        "normal",
+                        "grand",
+                        "organ"
+                    ],
+                    "default": "normal"
+                },
+                "staffNames": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minItems": 1
+                    }
+                },
+                "clefs": {
+                    "$comment": "This version does not support TAB notation.",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "G",
+                            "F",
+                            "C",
+                            "G8vb",
+                            "F8vb",
+                            "G8va",
+                            "F8va",
+                            "soprano",
+                            "mezzo",
+                            "alto",
+                            "tenor",
+                            "baritone",
+                            "percussion",
+                            "none"
+                        ],
+                        "minItems": 1
+                    },
+                    "default": [
+                        "G"
+                    ]
+                },
+                "twoLayersPerStaff": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "patch": {
+                    "$ref": "#/$defs/MidiValue",
+                    "default": 1
                 }
             }
         },
-        "ParamValueTypes": {
-            "type": "string",
-            "enum": [
-                "string",
-                "int",
-                "number",
-                "bool"
+        "PartDefinitions": {
+            "type": "object",
+            "patternProperties": {
+                "^[a-f0-9-]{36}$": {
+                    "$ref": "#/$defs/PartDefinition"
+                }
+            }
+        },
+        "PartInstance": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "$ref": "#/$defs/Uuid",
+                    "typeName": {
+                        "type": "string"
+                    }
+                },
+                "typeName": {
+                    "type": "string"
+                },
+                "index": {
+                    "type": "number",
+                    "minimum": 1,
+                    "default": 1
+                },
+                "layer": {
+                    "type": "number",
+                    "minimum": 1,
+                    "default": 1
+                }
+            },
+            "required": [
+                "type"
             ]
         },
-        "ParamValue": {
-            "oneOf": [
-                {
-                    "$ref": "#/$defs/ParamValueTypes"
+        "PartInstances": {
+            "type": "object",
+            "patternProperties": {
+                "^[a-f0-9-]{36}$": {
+                    "$ref": "#/$defs/PartInstance"
+                }
+            }
+        },
+        "PercussionCombo": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
                 },
-                {
+                "shortcut": {
+                    "type": "string"
+                },
+                "pitches": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/MidiValue"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                },
+                "notes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/NoteInstance"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                },
+                "noteheads": {
                     "type": "object",
                     "properties": {
-                        "label": {
+                        "quarter": {
                             "type": "string"
                         },
-                        "value": {
-                            "$ref": "#/$defs/ParamValueTypes"
+                        "half": {
+                            "type": "string"
                         },
-                        "default": {
-                            "type": "boolean"
+                        "whole": {
+                            "type": "string"
                         }
                     },
-                    "required": [
-                        "label",
-                        "value"
-                    ]
-                }
-            ]
-        },
-        "AttachmentParameter": {
-            "oneOf": [
-                {
-                    "$ref": "#/$defs/ParamValueTypes"
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "kind": {
-                            "type": "string",
-                            "enum": [
-                                "enum",
-                                "string",
-                                "int",
-                                "number",
-                                "bool"
-                            ]
-                        },
-                        "values": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/$defs/ParamValue"
-                            },
-                            "minItems": 1
-                        }
+                    "minProperties": 1,
+                    "staffPosition": {
+                        "type": "number",
+                        "minimum": -10,
+                        "maximum": 18
                     },
-                    "required": [
-                        "kind"
-                    ],
-                    "allOf": {
-                        "if": {
-                            "properties": {
-                                "kind": {
-                                    "const": "enum"
-                                }
-                            }
-                        },
-                        "then": {
-                            "required": [
-                                "values"
-                            ]
-                        },
-                        "else": {
-                            "not": {
-                                "required": [
-                                    "values"
-                                ]
-                            }
-                        }
+                    "hasUpStem": {
+                        "type": "boolean"
                     }
                 }
+            },
+            "required": [
+                "name",
+                "shortcut",
+                "pitches",
+                "staffPosition"
             ]
         },
-        "AttachmentDefinition": {
+        "PercussionSet": {
             "type": "object",
             "properties": {
                 "name": {
@@ -230,40 +356,25 @@
                 "description": {
                     "type": "string"
                 },
-                "hosts": {
-                    "oneOf": [
-                        {
-                            "$ref": "#/$defs/HostTypes"
-                        },
-                        {
-                            "$ref": "#/$defs/HostFilter"
-                        }
-                    ]
-                },
-                "params": {
+                "combos": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/$defs/AttachmentParameter"
+                        "$ref": "#/$defs/PercussionCombo"
                     }
-                },
-                "required": [
-                    "name",
-                    "hosts"
-                ]
-            }
-        },
-        "AttachmentInstance": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "$ref": "#/$defs/Uuid"
-                },
-                "params": {
-                    "type": "object",
-                    "minProperties": 1
                 }
             },
-            "required": ["id"]
+            "required": [
+                "name",
+                "combos"
+            ]
+        },
+        "PercussionSets": {
+            "type": "object",
+            "patternProperties": {
+                "^[a-f0-9-]{36}$": {
+                    "$ref": "#/$defs/PercussionSet"
+                }
+            }
         }
     }
 }

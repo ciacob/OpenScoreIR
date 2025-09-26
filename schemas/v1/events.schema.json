@@ -19,27 +19,42 @@
                 "pitches": {
                     "type": "array",
                     "items": {
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 127
+                        "$ref": "./common.schema.json#/MidiValue"
                     }
                 },
                 "notes": {
-                    // todo
+                    "type": "array",
+                    "items": {
+                        "$ref": "./common.schema.json#/NoteInstance"
+                    }
                 },
                 "noteSymbol": {
-                    // todo
+                    "$ref": "./common.schema.json#/NoteSymbol"
                 },
                 "attachments": {
-                    // todo
+                    "$ref": "./common.schema.json#/AttachableInstances"
                 },
                 "midiOuts": {
-                    // todo
+                    "$ref": "./common.schema.json#/AttachableInstances"
                 },
-                "useSlash": { "type":"boolean" }, "useSlur": { "type":"boolean" },
-                "stealNext": { "type":"boolean" },
-                "setId": { "$ref": "./common.schema.json#/$defs/Uuid" },
-                "strikes": { "type":"array","items":{"type":"string"} }
+                "useSlash": {
+                    "type": "boolean"
+                },
+                "useSlur": {
+                    "type": "boolean"
+                },
+                "stealNext": {
+                    "type": "boolean"
+                },
+                "setId": {
+                    "$ref": "./common.schema.json#/$defs/Uuid"
+                },
+                "strikes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
             },
             "required": [
                 "duration"
@@ -48,7 +63,60 @@
         "EventGroup": {
             "type": "object",
             "properties": {
-                // todo
+                "kind": {
+                    "type": "string",
+                    "enum": [
+                        "regular",
+                        "tuplet",
+                        "beam"
+                    ]
+                },
+                "groupEvents": {
+                    "oneOf": [
+                        {
+                            "$ref": "#/$defs/Event"
+                        },
+                        {
+                            "ref": "#/$defs/EventGroup"
+                        }
+                    ]
+                },
+                "numTupletBeats": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 128
+                },
+                "numRegularBeats": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 128
+                },
+                "tupletBeatDuration": {
+                    "$ref": "./common.schema.json#/$defs/Fraction"
+                },
+                "regularBeatDuration": {
+                    "$ref": "./common.schema.json#/$defs/Fraction"
+                }
+            },
+            "required": [
+                "groupEvents"
+            ],
+            "allOf": {
+                "if": {
+                    "properties": {
+                        "kind": {
+                            "const": "tuplet"
+                        }
+                    }
+                },
+                "then": {
+                    "required": [
+                        "numTupletBeats",
+                        "numRegularBeats",
+                        "tupletBeatDuration",
+                        "regularBeatDuration"
+                    ]
+                }
             }
         },
         "MusicSpans": {
