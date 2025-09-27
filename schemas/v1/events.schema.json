@@ -38,13 +38,16 @@
                     "$ref": "./common.schema.json#/AttachableInstances"
                 },
                 "useSlash": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": true
                 },
                 "useSlur": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": true
                 },
                 "stealNext": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": false
                 },
                 "setId": {
                     "$ref": "./common.schema.json#/$defs/Uuid"
@@ -53,12 +56,28 @@
                     "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "minItems": 1
                 }
             },
             "required": [
                 "duration"
-            ]
+            ],
+            "allOf": {
+                "if": {
+                    "properties": {
+                        "kind": {
+                            "const": "percussion"
+                        }
+                    }
+                },
+                "then": {
+                    "required": [
+                        "setId",
+                        "strikes"
+                    ]
+                }
+            }
         },
         "EventGroup": {
             "type": "object",
@@ -66,7 +85,6 @@
                 "kind": {
                     "type": "string",
                     "enum": [
-                        "regular",
                         "tuplet",
                         "beam"
                     ]
@@ -117,97 +135,82 @@
                         "regularBeatDuration"
                     ]
                 }
-            }
-        },
-        "MusicSpans": {
-            "type": "object",
-            "patternProperties": {
-                "^[a-f0-9-]{36}$": {
-                    "type": "object",
-                    "properties": {
-                        "kind": {
-                            "enum": [
-                                "regular",
-                                "multiRest"
-                            ],
-                            "default": "regular"
-                        },
-                        "part": {
-                            "$ref": "./common.schema.json#/$defs/Uuid"
-                        },
-                        "measure": {
-                            "$ref": "./common.schema.json#/$defs/Uuid"
-                        },
-                        "events": {
-                            "type": "array",
-                            "items": {
-                                "oneOf": [
-                                    {
-                                        "$ref": "#/$defs/Event"
-                                    },
-                                    {
-                                        "$ref": "#/$defs/EventGroup"
-                                    }
-                                ]
-                            }
-                        },
-                        "fromMeasure": {
-                            "$ref": "./common.schema.json#/$defs/Uuid"
-                        },
-                        "toMeasure": {
-                            "$ref": "./common.schema.json#/$defs/Uuid"
-                        }
-                    },
-                    "required": [
-                        "part"
-                    ],
-                    "allOf": [
-                        {
-                            "if": {
-                                "properties": {
-                                    "kind": {
-                                        "const": "multiRest"
-                                    }
-                                }
-                            },
-                            "then": {
-                                "required": [
-                                    "fromMeasure",
-                                    "toMeasure"
-                                ],
-                                "not": {
-                                    "required": [
-                                        "events",
-                                        "measure"
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            "if": {
-                                "properties": {
-                                    "kind": {
-                                        "const": "regular"
-                                    }
-                                }
-                            },
-                            "then": {
-                                "required": [
-                                    "events",
-                                    "measure"
-                                ],
-                                "not": {
-                                    "required": [
-                                        "fromMeasure",
-                                        "toMeasure"
-                                    ]
-                                }
-                            }
-                        }
-                    ]
-                }
             },
             "unevaluatedProperties": false
+        },
+        "MusicSpan": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "enum": [
+                        "regular",
+                        "multiRest"
+                    ],
+                    "default": "regular"
+                },
+                "part": {
+                    "$ref": "./common.schema.json#/$defs/Uuid"
+                },
+                "measure": {
+                    "$ref": "./common.schema.json#/$defs/Uuid"
+                },
+                "events": {
+                    "type": "array",
+                    "items": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/$defs/Event"
+                            },
+                            {
+                                "$ref": "#/$defs/EventGroup"
+                            }
+                        ]
+                    }
+                },
+                "fromMeasure": {
+                    "$ref": "./common.schema.json#/$defs/Uuid"
+                },
+                "toMeasure": {
+                    "$ref": "./common.schema.json#/$defs/Uuid"
+                }
+            },
+            "required": [
+                "part",
+                "measure",
+                "events"
+            ],
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "kind": {
+                                "const": "multiRest"
+                            }
+                        }
+                    },
+                    "then": {
+                        "required": [
+                            "fromMeasure",
+                            "toMeasure"
+                        ],
+                        "not": {
+                            "required": [
+                                "measure",
+                                "events"
+                            ]
+                        }
+                    }
+                }
+            ],
+            "unevaluatedProperties": false
+        }
+    },
+    "MusicSpans": {
+        "type": "object",
+        "patternProperties": {
+            "^[a-f0-9-]{36}$": {
+                "$ref": "#/$defs/MusicSpan"
+            }
         }
     }
 }

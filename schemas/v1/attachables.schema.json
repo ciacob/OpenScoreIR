@@ -15,9 +15,7 @@
             "type": "array",
             "minItems": 1,
             "items": {
-                "enum": {
-                    "$ref": "#/$defs/HostKind"
-                }
+                "$ref": "#/$defs/HostKind"
             }
         },
         "HostFilter": {

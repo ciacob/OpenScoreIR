@@ -131,9 +131,10 @@
             },
             "required": [
                 "type"
-            ]
+            ],
+            "additionalProperties": false
         },
-        "Measure": {
+        "MeasureInstance": {
             "type": "object",
             "required": [
                 "duration"
@@ -152,6 +153,7 @@
                     "$ref": "#/$defs/Fraction"
                 },
                 "barline": {
+                    "type": "string",
                     "enum": [
                         "normal",
                         "suggested",
@@ -159,9 +161,11 @@
                         "section",
                         "final",
                         "final-variation"
-                    ]
+                    ],
+                    "default": "normal"
                 },
                 "number": {
+                    "$comment": "For overriding the real number, e.g., for subsequent sections re-numbering.",
                     "type": "integer",
                     "minimum": 1
                 },
@@ -207,9 +211,9 @@
                 "staffNames": {
                     "type": "array",
                     "items": {
-                        "type": "string",
-                        "minItems": 1
-                    }
+                        "type": "string"
+                    },
+                    "minItems": 1
                 },
                 "clefs": {
                     "$comment": "This version does not support TAB notation.",
@@ -220,6 +224,9 @@
                             "G",
                             "F",
                             "C",
+                            "P",
+                            "percussion",
+                            "perc",
                             "G8vb",
                             "F8vb",
                             "G8va",
@@ -229,7 +236,6 @@
                             "alto",
                             "tenor",
                             "baritone",
-                            "percussion",
                             "none"
                         ],
                         "minItems": 1
@@ -246,7 +252,10 @@
                     "$ref": "#/$defs/MidiValue",
                     "default": 1
                 }
-            }
+            },
+            "required": [
+                "partName"
+            ]
         },
         "PartDefinitions": {
             "type": "object",
@@ -291,7 +300,7 @@
                 }
             }
         },
-        "PercussionCombo": {
+        "PercussionComboDefinition": {
             "type": "object",
             "properties": {
                 "name": {
@@ -345,9 +354,10 @@
                 "shortcut",
                 "pitches",
                 "staffPosition"
-            ]
+            ],
+            "additionalProperties": false
         },
-        "PercussionSet": {
+        "PercussionSetDefinition": {
             "type": "object",
             "properties": {
                 "name": {
@@ -359,20 +369,22 @@
                 "combos": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/$defs/PercussionCombo"
-                    }
+                        "$ref": "#/$defs/PercussionComboDefinition"
+                    },
+                    "minItems": 1
                 }
             },
             "required": [
                 "name",
                 "combos"
-            ]
+            ],
+            "additionalProperties": false
         },
-        "PercussionSets": {
+        "PercussionSetDefinitions": {
             "type": "object",
             "patternProperties": {
                 "^[a-f0-9-]{36}$": {
-                    "$ref": "#/$defs/PercussionSet"
+                    "$ref": "#/$defs/PercussionSetDefinition"
                 }
             }
         }
