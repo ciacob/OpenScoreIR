@@ -207,10 +207,11 @@
     },
     "MusicSpans": {
         "type": "object",
-        "patternProperties": {
-            "^[a-f0-9-]{36}$": {
-                "$ref": "#/$defs/MusicSpan"
-            }
+        "propertyNames": {
+            "$ref": "#/$defs/Uuid"
+        },
+        "additionalProperties": {
+            "$ref": "#/$defs/MusicSpan"
         }
     }
 }

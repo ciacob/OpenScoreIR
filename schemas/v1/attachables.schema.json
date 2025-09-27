@@ -192,10 +192,11 @@
         },
         "AttachableDefinitions": {
             "type": "object",
-            "patternProperties": {
-                "^[a-f0-9-]{36}$": {
-                    "$ref": "#/$defs/AttachableDefinition"
-                }
+            "propertyNames": {
+                "$ref": "#/$defs/Uuid"
+            },
+            "additionalProperties": {
+                "$ref": "#/$defs/AttachableDefinition"
             }
         },
         "AttachableInstance": {

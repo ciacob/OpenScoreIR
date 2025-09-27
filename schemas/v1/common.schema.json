@@ -19,7 +19,7 @@
         },
         "Uuid": {
             "type": "string",
-            "format": "uuid"
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
         },
         "Uuids": {
             "type": "array",
@@ -30,13 +30,13 @@
             "uniqueItems": true
         },
         "MidiValue": {
-            "type": "number",
+            "type": "integer",
             "minimum": 0,
-            "maximum": 128
+            "maximum": 127
         },
         "FractionString": {
             "type": "string",
-            "pattern": "^-?\\d+\\/([1-9]\\d*)$"
+            "pattern": "^\\d+\\/([1-9]\\d*)$"
         },
         "Fraction": {
             "oneOf": [
@@ -92,12 +92,12 @@
                     ]
                 },
                 "alteration": {
-                    "type": "number",
+                    "type": "integer",
                     "minimum": -2,
                     "maximum": 2
                 },
                 "octave": {
-                    "type": "number",
+                    "type": "integer",
                     "minimum": -1,
                     "maximum": 10
                 }
@@ -117,14 +117,14 @@
                         "whole",
                         "half",
                         "quarter",
-                        "eight",
+                        "eighth",
                         "sixteenth",
                         "thirty-second",
                         "sixty-fourth"
                     ]
                 },
                 "numDots": {
-                    "type": "number",
+                    "type": "integer",
                     "minimum": 0,
                     "maximum": 3
                 }
@@ -184,11 +184,20 @@
                 "attachments": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/$defs/AttachableInstance"
+                        "$ref": "./attachables.schema.json#/$defs/AttachableInstance"
                     }
                 }
             },
             "unevaluatedProperties": false
+        },
+        "MeasureInstances": {
+            "type": "object",
+            "propertyNames": {
+                "$ref": "#/$defs/Uuid"
+            },
+            "additionalProperties": {
+                "$ref": "#/$defs/MeasureInstance"
+            }
         },
         "PartDefinition": {
             "type": "object",
@@ -237,9 +246,9 @@
                             "tenor",
                             "baritone",
                             "none"
-                        ],
-                        "minItems": 1
+                        ]
                     },
+                    "minItems": 1,
                     "default": [
                         "G"
                     ]
@@ -255,49 +264,50 @@
             },
             "required": [
                 "partName"
-            ]
+            ],
+            "additionalProperties": false
         },
         "PartDefinitions": {
             "type": "object",
-            "patternProperties": {
-                "^[a-f0-9-]{36}$": {
-                    "$ref": "#/$defs/PartDefinition"
-                }
+            "propertyNames": {
+                "$ref": "#/$defs/Uuid"
+            },
+            "additionalProperties": {
+                "$ref": "#/$defs/PartDefinition"
             }
         },
         "PartInstance": {
             "type": "object",
             "properties": {
                 "type": {
-                    "$ref": "#/$defs/Uuid",
-                    "typeName": {
-                        "type": "string"
-                    }
+                    "$ref": "#/$defs/Uuid"
                 },
                 "typeName": {
                     "type": "string"
                 },
                 "index": {
-                    "type": "number",
+                    "type": "integer",
                     "minimum": 1,
                     "default": 1
                 },
                 "layer": {
-                    "type": "number",
+                    "type": "integer",
                     "minimum": 1,
                     "default": 1
                 }
             },
             "required": [
                 "type"
-            ]
+            ],
+            "additionalProperties": false
         },
         "PartInstances": {
             "type": "object",
-            "patternProperties": {
-                "^[a-f0-9-]{36}$": {
-                    "$ref": "#/$defs/PartInstance"
-                }
+            "propertyNames": {
+                "$ref": "#/$defs/Uuid"
+            },
+            "additionalProperties": {
+                "$ref": "#/$defs/PartInstance"
             }
         },
         "PercussionComboDefinition": {
@@ -322,8 +332,7 @@
                     "items": {
                         "$ref": "#/$defs/NoteInstance"
                     },
-                    "minItems": 1,
-                    "uniqueItems": true
+                    "minItems": 1
                 },
                 "noteheads": {
                     "type": "object",
@@ -339,14 +348,15 @@
                         }
                     },
                     "minProperties": 1,
-                    "staffPosition": {
-                        "type": "number",
-                        "minimum": -10,
-                        "maximum": 18
-                    },
-                    "hasUpStem": {
-                        "type": "boolean"
-                    }
+                    "additionalProperties": false
+                },
+                "staffPosition": {
+                    "type": "integer",
+                    "minimum": -10,
+                    "maximum": 18
+                },
+                "hasUpStem": {
+                    "type": "boolean"
                 }
             },
             "required": [
@@ -382,10 +392,11 @@
         },
         "PercussionSetDefinitions": {
             "type": "object",
-            "patternProperties": {
-                "^[a-f0-9-]{36}$": {
-                    "$ref": "#/$defs/PercussionSetDefinition"
-                }
+            "propertyNames": {
+                "$ref": "#/$defs/Uuid"
+            },
+            "additionalProperties": {
+                "$ref": "#/$defs/PercussionSetDefinition"
             }
         }
     }
