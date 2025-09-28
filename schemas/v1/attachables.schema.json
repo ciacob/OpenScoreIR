@@ -20,17 +20,17 @@
         },
         "HostFilter": {
             "type": "object",
+            "required": [
+                "baseType"
+            ],
+            "additionalProperties": false,
             "properties": {
                 "baseType": {
-                    "type": "string",
-                    "enum": [
-                        "measures",
-                        "events",
-                        "pitches"
-                    ]
+                    "$ref": "#/$defs/HostKind"
                 },
                 "filter": {
                     "type": "object",
+                    "additionalProperties": false,
                     "properties": {
                         "kind": {
                             "type": "string",
@@ -58,9 +58,15 @@
                         },
                         "value": {
                             "oneOf": [
-                                "string",
-                                "number",
-                                "boolean"
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "number"
+                                },
+                                {
+                                    "type": "boolean"
+                                }
                             ]
                         }
                     },
@@ -73,15 +79,16 @@
             }
         },
         "ParamValueTypes": {
-            "type": "string",
-            "enum": [
+            "$comment": "The simple types a `ParamValue` can be (when it is not an Object with `label` and `values` keys).",
+            "type": [
                 "string",
-                "int",
+                "integer",
                 "number",
-                "bool"
+                "boolean"
             ]
         },
         "ParamValue": {
+            "$comment": "This validates the entities that populate the `values` Array of each parameter entity.",
             "oneOf": [
                 {
                     "$ref": "#/$defs/ParamValueTypes"
@@ -102,16 +109,27 @@
                     "required": [
                         "label",
                         "value"
-                    ]
+                    ],
+                    "additionalProperties": false
                 }
             ]
         },
         "AttachableParameter": {
+            "$comment": "This validates the entity that goes right beneath `params`, e.g., the `duration` parameter for the `fermata` attachment.",
             "oneOf": [
                 {
-                    "$ref": "#/$defs/ParamValueTypes"
+                    "$comment": "Parameters can simply be strings, booleans, etc., without further inner structure.",
+                    "type": "string",
+                    "enum": [
+                        "enum",
+                        "string",
+                        "int",
+                        "number",
+                        "bool"
+                    ]
                 },
                 {
+                    "$comment": "Or, they can be Objects with `kind` and `values` properties. Observe that `kind` uses `int`, not `integer`.",
                     "type": "object",
                     "properties": {
                         "kind": {
@@ -135,31 +153,35 @@
                     "required": [
                         "kind"
                     ],
-                    "allOf": {
-                        "if": {
-                            "properties": {
-                                "kind": {
-                                    "const": "enum"
+                    "allOf": [
+                        {
+                            "if": {
+                                "properties": {
+                                    "kind": {
+                                        "const": "enum"
+                                    }
                                 }
-                            }
-                        },
-                        "then": {
-                            "required": [
-                                "values"
-                            ]
-                        },
-                        "else": {
-                            "not": {
+                            },
+                            "then": {
                                 "required": [
                                     "values"
                                 ]
+                            },
+                            "else": {
+                                "not": {
+                                    "required": [
+                                        "values"
+                                    ]
+                                }
                             }
                         }
-                    }
+                    ],
+                    "additionalProperties": false
                 }
             ]
         },
         "AttachableDefinition": {
+            "$comment": "This validates a attachable entity (e.g., an Object placed under `$definitions/attachments`).",
             "type": "object",
             "properties": {
                 "name": {
@@ -179,21 +201,22 @@
                     ]
                 },
                 "params": {
-                    "type": "array",
-                    "items": {
+                    "type": "object",
+                    "additionalProperties": {
                         "$ref": "#/$defs/AttachableParameter"
                     }
                 },
                 "required": [
                     "name",
                     "hosts"
-                ]
+                ],
+                "additionalProperties": false
             }
         },
         "AttachableDefinitions": {
             "type": "object",
             "propertyNames": {
-                "$ref": "#/$defs/Uuid"
+                "$ref": "./common.schema.json#/$defs/Uuid"
             },
             "additionalProperties": {
                 "$ref": "#/$defs/AttachableDefinition"
@@ -207,7 +230,8 @@
                 },
                 "params": {
                     "type": "object",
-                    "minProperties": 1
+                    "minProperties": 1,
+                    "additionalProperties": true
                 }
             },
             "required": [
@@ -223,6 +247,13 @@
                 "oneOf": [
                     {
                         "$ref": "./common.schema.json#/$defs/Uuid"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "$ref": "./common.schema.json#/$defs/Uuid"
+                        },
+                        "minItems": 1
                     },
                     {
                         "$ref": "#/$defs/AttachableInstance"
