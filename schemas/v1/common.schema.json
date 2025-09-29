@@ -45,7 +45,7 @@
                 },
                 {
                     "type": "array",
-                    "items": [
+                    "prefixItems": [
                         {
                             "type": "integer"
                         },
@@ -54,8 +54,8 @@
                             "minimum": 1
                         }
                     ],
-                    "minItems": 2,
-                    "maxItems": 2
+                    "items": false,
+                    "minItems": 2
                 },
                 {
                     "type": "object",
@@ -197,7 +197,8 @@
             },
             "additionalProperties": {
                 "$ref": "#/$defs/MeasureInstance"
-            }
+            },
+            "minProperties": 1
         },
         "PartDefinition": {
             "type": "object",
@@ -308,7 +309,8 @@
             },
             "additionalProperties": {
                 "$ref": "#/$defs/PartInstance"
-            }
+            },
+            "minProperties": 1
         },
         "PercussionComboDefinition": {
             "type": "object",

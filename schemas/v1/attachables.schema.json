@@ -79,12 +79,19 @@
             }
         },
         "ParamValueTypes": {
-            "$comment": "The simple types a `ParamValue` can be (when it is not an Object with `label` and `values` keys).",
-            "type": [
-                "string",
-                "integer",
-                "number",
-                "boolean"
+            "anyOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "number"
+                },
+                {
+                    "type": "boolean"
+                }
             ]
         },
         "ParamValue": {
@@ -130,59 +137,62 @@
                 },
                 {
                     "$comment": "Or, they can be Objects with `kind` and `values` properties. Observe that `kind` uses `int`, not `integer`.",
-                    "type": "object",
-                    "properties": {
-                        "kind": {
-                            "type": "string",
-                            "enum": [
-                                "enum",
-                                "string",
-                                "int",
-                                "number",
-                                "bool"
-                            ]
-                        },
-                        "values": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/$defs/ParamValue"
-                            },
-                            "minItems": 1
-                        }
-                    },
-                    "required": [
-                        "kind"
-                    ],
-                    "allOf": [
+                    "oneOf": [
                         {
-                            "if": {
-                                "properties": {
-                                    "kind": {
-                                        "const": "enum"
-                                    }
+                            "type": "object",
+                            "properties": {
+                                "kind": {
+                                    "const": "enum"
+                                },
+                                "values": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/$defs/ParamValue"
+                                    },
+                                    "minItems": 1
                                 }
                             },
-                            "then": {
+                            "required": [
+                                "kind",
+                                "values"
+                            ],
+                            "additionalProperties": false
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "kind": {
+                                    "type": "string",
+                                    "enum": [
+                                        "string",
+                                        "int",
+                                        "number",
+                                        "bool"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "kind"
+                            ],
+                            "not": {
                                 "required": [
                                     "values"
                                 ]
                             },
-                            "else": {
-                                "not": {
-                                    "required": [
-                                        "values"
-                                    ]
-                                }
-                            }
+                            "additionalProperties": false
                         }
-                    ],
-                    "additionalProperties": false
+                    ]
                 }
             ]
         },
         "AttachableDefinition": {
             "$comment": "This validates a attachable entity (e.g., an Object placed under `$definitions/attachments`).",
             "type": "object",
+            "required": [
+                "name",
+                "hosts"
+            ],
+            "additionalProperties": false,
             "properties": {
                 "name": {
                     "type": "string"
@@ -205,12 +215,7 @@
                     "additionalProperties": {
                         "$ref": "#/$defs/AttachableParameter"
                     }
-                },
-                "required": [
-                    "name",
-                    "hosts"
-                ],
-                "additionalProperties": false
+                }
             }
         },
         "AttachableDefinitions": {

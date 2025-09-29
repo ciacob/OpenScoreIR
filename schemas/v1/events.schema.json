@@ -82,19 +82,11 @@
                     "setId",
                     "strikes"
                 ],
-                "not": {
-                    "anyOf": [
-                        {
-                            "required": [
-                                "pitches"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "notes"
-                            ]
-                        }
-                    ]
+                "properties": {
+                    "setId": {},
+                    "strikes": {},
+                    "pitches": false,
+                    "notes": false
                 }
             },
             "unevaluatedProperties": false
@@ -152,6 +144,12 @@
                 }
             },
             "then": {
+                "properties": {
+                    "numTupletBeats": {},
+                    "numRegularBeats": {},
+                    "tupletBeatDuration": {},
+                    "regularBeatDuration": {}
+                },
                 "required": [
                     "numTupletBeats",
                     "numRegularBeats",
@@ -228,7 +226,10 @@
                     "properties": {
                         "kind": {
                             "const": "regular"
-                        }
+                        },
+                        "part": {},
+                        "measure": {},
+                        "events": {}
                     },
                     "required": [
                         "part",
@@ -240,7 +241,10 @@
                     "properties": {
                         "kind": {
                             "const": "multiRest"
-                        }
+                        },
+                        "part": {},
+                        "fromMeasure": {},
+                        "toMeasure": {}
                     },
                     "required": [
                         "part",

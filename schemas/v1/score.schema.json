@@ -23,12 +23,9 @@
   },
   "type": "object",
   "properties": {
-    "required": [
-      "$$docInfo",
-      "$instances",
-      "$lists",
-      "musicSpans"
-    ],
+    "$schema": {
+      "type": "string"
+    },
     "$$docInfo": {
       "$ref": "#/$defs/DocInfo"
     },
@@ -55,12 +52,10 @@
       "type": "object",
       "properties": {
         "parts": {
-          "$ref": "./common.schema.json#/$defs/PartInstances",
-          "minProperties": 1
+          "$ref": "./common.schema.json#/$defs/PartInstances"
         },
         "measures": {
-          "$ref": "./common.schema.json#/$defs/MeasureInstances",
-          "minProperties": 1
+          "$ref": "./common.schema.json#/$defs/MeasureInstances"
         }
       },
       "required": [
@@ -92,5 +87,11 @@
       "$ref": "./events.schema.json#/$defs/MusicSpans"
     }
   },
+  "required": [
+    "$$docInfo",
+    "$instances",
+    "$lists",
+    "musicSpans"
+  ],
   "additionalProperties": false
 }
