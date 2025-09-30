@@ -1,8 +1,8 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://ciacob.github.io/OpenScoreIR/schemas/v1/score.schema.json",
   "title": "OpenScoreIR — Score",
-  "$defs": {
+  "definitions": {
     "DocInfo": {
       "type": "object",
       "properties": {
@@ -27,22 +27,22 @@
       "type": "string"
     },
     "$$docInfo": {
-      "$ref": "#/$defs/DocInfo"
+      "$ref": "#/definitions/DocInfo"
     },
     "$definitions": {
       "type": "object",
       "properties": {
         "parts": {
-          "$ref": "./common.schema.json#/$defs/PartDefinitions"
+          "$ref": "./common.schema.json#/definitions/PartDefinitions"
         },
         "attachments": {
-          "$ref": "./attachables.schema.json#/$defs/AttachableDefinitions"
+          "$ref": "./attachables.schema.json#/definitions/AttachableDefinitions"
         },
         "percussionSets": {
-          "$ref": "./common.schema.json#/$defs/PercussionSetDefinitions"
+          "$ref": "./common.schema.json#/definitions/PercussionSetDefinitions"
         },
         "midiModels": {
-          "$ref": "./attachables.schema.json#/$defs/AttachableDefinitions"
+          "$ref": "./attachables.schema.json#/definitions/AttachableDefinitions"
         }
       },
       "minProperties": 1,
@@ -52,10 +52,10 @@
       "type": "object",
       "properties": {
         "parts": {
-          "$ref": "./common.schema.json#/$defs/PartInstances"
+          "$ref": "./common.schema.json#/definitions/PartInstances"
         },
         "measures": {
-          "$ref": "./common.schema.json#/$defs/MeasureInstances"
+          "$ref": "./common.schema.json#/definitions/MeasureInstances"
         }
       },
       "required": [
@@ -68,10 +68,10 @@
       "type": "object",
       "properties": {
         "parts": {
-          "$ref": "./common.schema.json#/$defs/Uuids"
+          "$ref": "./common.schema.json#/definitions/Uuids"
         },
         "measures": {
-          "$ref": "./common.schema.json#/$defs/Uuids"
+          "$ref": "./common.schema.json#/definitions/Uuids"
         }
       },
       "required": [
@@ -81,10 +81,10 @@
       "additionalProperties": false
     },
     "scoreInfo": {
-      "$ref": "./common.schema.json#/$defs/ScoreInfo"
+      "$ref": "./common.schema.json#/definitions/ScoreInfo"
     },
     "musicSpans": {
-      "$ref": "./events.schema.json#/$defs/MusicSpans"
+      "$ref": "./events.schema.json#/definitions/MusicSpans"
     }
   },
   "required": [

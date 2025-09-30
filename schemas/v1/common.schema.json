@@ -1,7 +1,7 @@
 {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "https://ciacob.github.io/OpenScoreIR/schemas/v1/common.schema.json",
-    "$defs": {
+    "definitions": {
         "ScoreInfo": {
             "type": "object",
             "properties": {
@@ -24,7 +24,7 @@
         "Uuids": {
             "type": "array",
             "items": {
-                "$ref": "#/$defs/Uuid"
+                "$ref": "#/definitions/Uuid"
             },
             "minItems": 1,
             "uniqueItems": true
@@ -41,11 +41,11 @@
         "Fraction": {
             "oneOf": [
                 {
-                    "$ref": "#/$defs/FractionString"
+                    "$ref": "#/definitions/FractionString"
                 },
                 {
                     "type": "array",
-                    "prefixItems": [
+                    "items": [
                         {
                             "type": "integer"
                         },
@@ -54,8 +54,8 @@
                             "minimum": 1
                         }
                     ],
-                    "items": false,
-                    "minItems": 2
+                    "minItems": 2,
+                    "maxItems": 2
                 },
                 {
                     "type": "object",
@@ -150,7 +150,7 @@
                     "maxItems": 2
                 },
                 "duration": {
-                    "$ref": "#/$defs/Fraction"
+                    "$ref": "#/definitions/Fraction"
                 },
                 "barline": {
                     "type": "string",
@@ -184,19 +184,19 @@
                 "attachments": {
                     "type": "array",
                     "items": {
-                        "$ref": "./attachables.schema.json#/$defs/AttachableInstance"
+                        "$ref": "./attachables.schema.json#/definitions/AttachableInstance"
                     }
                 }
             },
-            "unevaluatedProperties": false
+            "additionalProperties":false
         },
         "MeasureInstances": {
             "type": "object",
             "propertyNames": {
-                "$ref": "#/$defs/Uuid"
+                "$ref": "#/definitions/Uuid"
             },
             "additionalProperties": {
-                "$ref": "#/$defs/MeasureInstance"
+                "$ref": "#/definitions/MeasureInstance"
             },
             "minProperties": 1
         },
@@ -259,7 +259,7 @@
                     "default": true
                 },
                 "patch": {
-                    "$ref": "#/$defs/MidiValue",
+                    "$ref": "#/definitions/MidiValue",
                     "default": 1
                 }
             },
@@ -271,17 +271,17 @@
         "PartDefinitions": {
             "type": "object",
             "propertyNames": {
-                "$ref": "#/$defs/Uuid"
+                "$ref": "#/definitions/Uuid"
             },
             "additionalProperties": {
-                "$ref": "#/$defs/PartDefinition"
+                "$ref": "#/definitions/PartDefinition"
             }
         },
         "PartInstance": {
             "type": "object",
             "properties": {
                 "type": {
-                    "$ref": "#/$defs/Uuid"
+                    "$ref": "#/definitions/Uuid"
                 },
                 "typeName": {
                     "type": "string"
@@ -305,10 +305,10 @@
         "PartInstances": {
             "type": "object",
             "propertyNames": {
-                "$ref": "#/$defs/Uuid"
+                "$ref": "#/definitions/Uuid"
             },
             "additionalProperties": {
-                "$ref": "#/$defs/PartInstance"
+                "$ref": "#/definitions/PartInstance"
             },
             "minProperties": 1
         },
@@ -324,7 +324,7 @@
                 "pitches": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/$defs/MidiValue"
+                        "$ref": "#/definitions/MidiValue"
                     },
                     "minItems": 1,
                     "uniqueItems": true
@@ -332,7 +332,7 @@
                 "notes": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/$defs/NoteInstance"
+                        "$ref": "#/definitions/NoteInstance"
                     },
                     "minItems": 1
                 },
@@ -381,7 +381,7 @@
                 "combos": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/$defs/PercussionComboDefinition"
+                        "$ref": "#/definitions/PercussionComboDefinition"
                     },
                     "minItems": 1
                 }
@@ -395,10 +395,10 @@
         "PercussionSetDefinitions": {
             "type": "object",
             "propertyNames": {
-                "$ref": "#/$defs/Uuid"
+                "$ref": "#/definitions/Uuid"
             },
             "additionalProperties": {
-                "$ref": "#/$defs/PercussionSetDefinition"
+                "$ref": "#/definitions/PercussionSetDefinition"
             }
         }
     }

@@ -1,43 +1,82 @@
 {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "https://ciacob.github.io/OpenScoreIR/schemas/v1/events.schema.json",
-    "$defs": {
-        "Event": {
+    "definitions": {
+        "RegularEvent": {
             "type": "object",
+            "required": [
+                "duration",
+                "pitches"
+            ],
             "properties": {
                 "kind": {
-                    "enum": [
-                        "regular",
-                        "grace",
-                        "percussion"
-                    ],
-                    "default": "regular"
+                    "const": "regular"
                 },
                 "duration": {
-                    "$ref": "./common.schema.json#/$defs/Fraction"
+                    "$ref": "./common.schema.json#/definitions/Fraction"
                 },
                 "pitches": {
                     "type": "array",
                     "items": {
-                        "$ref": "./common.schema.json#/$defs/MidiValue"
+                        "$ref": "./common.schema.json#/definitions/MidiValue"
                     },
                     "minItems": 1
                 },
                 "notes": {
                     "type": "array",
                     "items": {
-                        "$ref": "./common.schema.json#/$defs/NoteInstance"
+                        "$ref": "./common.schema.json#/definitions/NoteInstance"
                     },
                     "minItems": 1
                 },
                 "noteSymbol": {
-                    "$ref": "./common.schema.json#/$defs/NoteSymbol"
+                    "$ref": "./common.schema.json#/definitions/NoteSymbol"
                 },
                 "attachments": {
-                    "$ref": "./attachables.schema.json#/$defs/AttachableInstances"
+                    "$ref": "./attachables.schema.json#/definitions/AttachableInstances"
                 },
                 "midiOuts": {
-                    "$ref": "./attachables.schema.json#/$defs/AttachableInstances"
+                    "$ref": "./attachables.schema.json#/definitions/AttachableInstances"
+                }
+            },
+            "additionalProperties": false
+        },
+        "GraceEvent": {
+            "type": "object",
+            "required": [
+                "kind",
+                "duration",
+                "pitches"
+            ],
+            "properties": {
+                "kind": {
+                    "const": "grace"
+                },
+                "duration": {
+                    "$ref": "./common.schema.json#/definitions/Fraction"
+                },
+                "pitches": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "./common.schema.json#/definitions/MidiValue"
+                    },
+                    "minItems": 1
+                },
+                "notes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "./common.schema.json#/definitions/NoteInstance"
+                    },
+                    "minItems": 1
+                },
+                "noteSymbol": {
+                    "$ref": "./common.schema.json#/definitions/NoteSymbol"
+                },
+                "attachments": {
+                    "$ref": "./attachables.schema.json#/definitions/AttachableInstances"
+                },
+                "midiOuts": {
+                    "$ref": "./attachables.schema.json#/definitions/AttachableInstances"
                 },
                 "useSlash": {
                     "$comment": "Only applies when `kind` is `grace`.",
@@ -53,10 +92,37 @@
                     "$comment": "Only applies when `kind` is `grace`.",
                     "type": "boolean",
                     "default": false
+                }
+            },
+            "additionalProperties": false
+        },
+        "PercussionEvent": {
+            "type": "object",
+            "required": [
+                "kind",
+                "duration",
+                "setId",
+                "strikes"
+            ],
+            "properties": {
+                "kind": {
+                    "const": "percussion"
+                },
+                "duration": {
+                    "$ref": "./common.schema.json#/definitions/Fraction"
+                },
+                "noteSymbol": {
+                    "$ref": "./common.schema.json#/definitions/NoteSymbol"
+                },
+                "attachments": {
+                    "$ref": "./attachables.schema.json#/definitions/AttachableInstances"
+                },
+                "midiOuts": {
+                    "$ref": "./attachables.schema.json#/definitions/AttachableInstances"
                 },
                 "setId": {
                     "$comment": "Only applies when `kind` is `percussion`.",
-                    "$ref": "./common.schema.json#/$defs/Uuid"
+                    "$ref": "./common.schema.json#/definitions/Uuid"
                 },
                 "strikes": {
                     "$comment": "Only applies when `kind` is `percussion`.",
@@ -67,53 +133,33 @@
                     "minItems": 1
                 }
             },
-            "required": [
-                "duration"
-            ],
-            "if": {
-                "properties": {
-                    "kind": {
-                        "const": "percussion"
-                    }
-                }
-            },
-            "then": {
-                "required": [
-                    "setId",
-                    "strikes"
-                ],
-                "properties": {
-                    "setId": {},
-                    "strikes": {},
-                    "pitches": false,
-                    "notes": false
-                }
-            },
-            "unevaluatedProperties": false
+            "additionalProperties": false
         },
-        "EventGroup": {
+        "Event": {
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/RegularEvent"
+                },
+                {
+                    "$ref": "#/definitions/GraceEvent"
+                },
+                {
+                    "$ref": "#/definitions/PercussionEvent"
+                }
+            ]
+        },
+        "TupletGroup": {
             "type": "object",
+            "required": [
+                "kind",
+                "numTupletBeats",
+                "numRegularBeats",
+                "tupletBeatDuration",
+                "regularBeatDuration"
+            ],
             "properties": {
                 "kind": {
-                    "type": "string",
-                    "enum": [
-                        "tuplet",
-                        "beam"
-                    ]
-                },
-                "groupEvents": {
-                    "type": "array",
-                    "items": {
-                        "oneOf": [
-                            {
-                                "$ref": "#/$defs/Event"
-                            },
-                            {
-                                "$ref": "#/$defs/EventGroup"
-                            }
-                        ]
-                    },
-                    "minItems": 1
+                    "const": "tuplet"
                 },
                 "numTupletBeats": {
                     "type": "integer",
@@ -126,156 +172,123 @@
                     "maximum": 128
                 },
                 "tupletBeatDuration": {
-                    "$ref": "./common.schema.json#/$defs/Fraction"
+                    "$ref": "./common.schema.json#/definitions/Fraction"
                 },
                 "regularBeatDuration": {
-                    "$ref": "./common.schema.json#/$defs/Fraction"
+                    "$ref": "./common.schema.json#/definitions/Fraction"
                 }
             },
-            "required": [
-                "kind",
-                "groupEvents"
-            ],
-            "if": {
-                "properties": {
-                    "kind": {
-                        "const": "tuplet"
-                    }
-                }
-            },
-            "then": {
-                "properties": {
-                    "numTupletBeats": {},
-                    "numRegularBeats": {},
-                    "tupletBeatDuration": {},
-                    "regularBeatDuration": {}
-                },
-                "required": [
-                    "numTupletBeats",
-                    "numRegularBeats",
-                    "tupletBeatDuration",
-                    "regularBeatDuration"
-                ]
-            },
-            "else": {
-                "not": {
-                    "anyOf": [
-                        {
-                            "required": [
-                                "numTupletBeats"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "numRegularBeats"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "tupletBeatDuration"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "regularBeatDuration"
-                            ]
-                        }
-                    ]
-                }
-            },
-            "unevaluatedProperties": false
+            "additionalProperties": false
         },
-        "MusicSpan": {
+        "BeamGroup": {
             "type": "object",
             "properties": {
                 "kind": {
-                    "enum": [
-                        "regular",
-                        "multiRest"
-                    ],
-                    "default": "regular"
+                    "const": "beam"
+                }
+            },
+            "additionalProperties": false
+        },
+        "EventGroup": {
+            "type": "object",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/TupletGroup"
+                },
+                {
+                    "$ref": "#/definitions/BeamGroup"
+                }
+            ],
+            "properties": {
+                "groupEvents": {
+                    "type": "array",
+                    "items": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/definitions/Event"
+                            },
+                            {
+                                "$ref": "#/definitions/EventGroup"
+                            }
+                        ]
+                    },
+                    "minItems": 1
+                }
+            },
+            "required": [
+                "groupEvents"
+            ],
+            "additionalProperties": false
+        },
+        "RegularSpan": {
+            "type": "object",
+            "required": [
+                "part",
+                "measure"
+            ],
+            "properties": {
+                "kind": {
+                    "const": "regular"
                 },
                 "part": {
-                    "$ref": "./common.schema.json#/$defs/Uuid"
+                    "$ref": "./common.schema.json#/definitions/Uuid"
                 },
                 "measure": {
-                    "$ref": "./common.schema.json#/$defs/Uuid"
+                    "$ref": "./common.schema.json#/definitions/Uuid"
                 },
                 "events": {
                     "type": "array",
                     "items": {
                         "oneOf": [
                             {
-                                "$ref": "#/$defs/Event"
+                                "$ref": "#/definitions/Event"
                             },
                             {
-                                "$ref": "#/$defs/EventGroup"
+                                "$ref": "#/definitions/EventGroup"
                             }
                         ]
                     }
-                },
-                "fromMeasure": {
-                    "$ref": "./common.schema.json#/$defs/Uuid"
-                },
-                "toMeasure": {
-                    "$ref": "./common.schema.json#/$defs/Uuid"
                 }
             },
+            "additionalProperties": false
+        },
+        "MultiRestSpan": {
+            "type": "object",
+            "required": [
+                "kind",
+                "fromMeasure",
+                "toMeasure"
+            ],
+            "properties": {
+                "kind": {
+                    "const": "multiRest"
+                },
+                "fromMeasure": {
+                    "$ref": "./common.schema.json#/definitions/Uuid"
+                },
+                "toMeasure": {
+                    "$ref": "./common.schema.json#/definitions/Uuid"
+                }
+            },
+            "additionalProperties": false
+        },
+        "MusicSpan": {
             "oneOf": [
                 {
-                    "properties": {
-                        "kind": {
-                            "const": "regular"
-                        },
-                        "part": {},
-                        "measure": {},
-                        "events": {}
-                    },
-                    "required": [
-                        "part",
-                        "measure",
-                        "events"
-                    ]
+                    "$ref": "#/definitions/RegularSpan"
                 },
                 {
-                    "properties": {
-                        "kind": {
-                            "const": "multiRest"
-                        },
-                        "part": {},
-                        "fromMeasure": {},
-                        "toMeasure": {}
-                    },
-                    "required": [
-                        "part",
-                        "fromMeasure",
-                        "toMeasure"
-                    ],
-                    "not": {
-                        "anyOf": [
-                            {
-                                "required": [
-                                    "measure"
-                                ]
-                            },
-                            {
-                                "required": [
-                                    "events"
-                                ]
-                            }
-                        ]
-                    }
+                    "$ref": "#/definitions/MultiRestSpan"
                 }
-            ],
-            "unevaluatedProperties": false
+            ]
         },
         "MusicSpans": {
             "type": "object",
             "propertyNames": {
-                "$ref": "./common.schema.json#/$defs/Uuid"
+                "$ref": "./common.schema.json#/definitions/Uuid"
             },
             "additionalProperties": {
-                "$ref": "#/$defs/MusicSpan"
+                "$ref": "#/definitions/MusicSpan"
             }
         }
     }

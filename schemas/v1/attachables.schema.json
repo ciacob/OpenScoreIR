@@ -1,8 +1,8 @@
 {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "https://ciacob.github.io/OpenScoreIR/schemas/v1/attachables.schema.json",
     "$comment": "Serves for both attachments and MIDI modules, which are formally identical.",
-    "$defs": {
+    "definitions": {
         "HostKind": {
             "type": "string",
             "enum": [
@@ -15,7 +15,7 @@
             "type": "array",
             "minItems": 1,
             "items": {
-                "$ref": "#/$defs/HostKind"
+                "$ref": "#/definitions/HostKind"
             }
         },
         "HostFilter": {
@@ -26,7 +26,7 @@
             "additionalProperties": false,
             "properties": {
                 "baseType": {
-                    "$ref": "#/$defs/HostKind"
+                    "$ref": "#/definitions/HostKind"
                 },
                 "filter": {
                     "type": "object",
@@ -98,7 +98,7 @@
             "$comment": "This validates the entities that populate the `values` Array of each parameter entity.",
             "oneOf": [
                 {
-                    "$ref": "#/$defs/ParamValueTypes"
+                    "$ref": "#/definitions/ParamValueTypes"
                 },
                 {
                     "type": "object",
@@ -107,7 +107,7 @@
                             "type": "string"
                         },
                         "value": {
-                            "$ref": "#/$defs/ParamValueTypes"
+                            "$ref": "#/definitions/ParamValueTypes"
                         },
                         "default": {
                             "type": "boolean"
@@ -147,7 +147,7 @@
                                 "values": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/$defs/ParamValue"
+                                        "$ref": "#/definitions/ParamValue"
                                     },
                                     "minItems": 1
                                 }
@@ -174,11 +174,6 @@
                             "required": [
                                 "kind"
                             ],
-                            "not": {
-                                "required": [
-                                    "values"
-                                ]
-                            },
                             "additionalProperties": false
                         }
                     ]
@@ -203,17 +198,17 @@
                 "hosts": {
                     "oneOf": [
                         {
-                            "$ref": "#/$defs/HostTypes"
+                            "$ref": "#/definitions/HostTypes"
                         },
                         {
-                            "$ref": "#/$defs/HostFilter"
+                            "$ref": "#/definitions/HostFilter"
                         }
                     ]
                 },
                 "params": {
                     "type": "object",
                     "additionalProperties": {
-                        "$ref": "#/$defs/AttachableParameter"
+                        "$ref": "#/definitions/AttachableParameter"
                     }
                 }
             }
@@ -221,17 +216,17 @@
         "AttachableDefinitions": {
             "type": "object",
             "propertyNames": {
-                "$ref": "./common.schema.json#/$defs/Uuid"
+                "$ref": "./common.schema.json#/definitions/Uuid"
             },
             "additionalProperties": {
-                "$ref": "#/$defs/AttachableDefinition"
+                "$ref": "#/definitions/AttachableDefinition"
             }
         },
         "AttachableInstance": {
             "type": "object",
             "properties": {
                 "id": {
-                    "$ref": "./common.schema.json#/$defs/Uuid"
+                    "$ref": "./common.schema.json#/definitions/Uuid"
                 },
                 "params": {
                     "type": "object",
@@ -251,22 +246,22 @@
             "additionalProperties": {
                 "oneOf": [
                     {
-                        "$ref": "./common.schema.json#/$defs/Uuid"
+                        "$ref": "./common.schema.json#/definitions/Uuid"
                     },
                     {
                         "type": "array",
                         "items": {
-                            "$ref": "./common.schema.json#/$defs/Uuid"
+                            "$ref": "./common.schema.json#/definitions/Uuid"
                         },
                         "minItems": 1
                     },
                     {
-                        "$ref": "#/$defs/AttachableInstance"
+                        "$ref": "#/definitions/AttachableInstance"
                     },
                     {
                         "type": "array",
                         "items": {
-                            "$ref": "#/$defs/AttachableInstance"
+                            "$ref": "#/definitions/AttachableInstance"
                         },
                         "minItems": 1
                     }

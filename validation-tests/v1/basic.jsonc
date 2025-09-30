@@ -1,4 +1,48 @@
 {
-    "$schema": "../../schemas/v1/score.schema.json"
-
+  "$schema": "../../schemas/v1/score.schema.json",
+  "$$docInfo": {
+    "version": "1.0.0"
+  },
+  "$definitions": {
+    "parts": {
+      "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa": {
+        "partName": "Piano"
+      }
+    }
+  },
+  "$instances": {
+    "parts": {
+      "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb": {
+        "type": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+      }
+    },
+    "measures": {
+      "cccccccc-cccc-4ccc-8ccc-cccccccccccc": {
+        "duration": "1/1"
+      }
+    }
+  },
+  "$lists": {
+    "parts": [
+      "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"
+    ],
+    "measures": [
+      "cccccccc-cccc-4ccc-8ccc-cccccccccccc"
+    ]
+  },
+  "scoreInfo": {
+    "title": "Hello"
+  },
+  "musicSpans": {
+    "dddddddd-dddd-4ddd-8ddd-dddddddddddd": {
+      "part": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      "measure": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+      "events": [
+        {
+          "duration": "1/1",
+          "pitches": [60]
+        }
+      ]
+    }
+  }
 }
