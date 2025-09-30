@@ -1,0 +1,30 @@
+{
+  "$schema": "../../schemas/v1/score.schema.json",
+  "$$docInfo": { "version": "1.0.0" },
+  "$definitions": { "parts": { "0f9c6b71-b3f4-4e1c-8c3e-1a2e4f5b6c7d": { "partName": "Alto" } } },
+  "$instances": {
+    "parts": { "a8bb1c4a-4e0f-46f3-b9b2-6a1e2d3c4b5a": { "type": "0f9c6b71-b3f4-4e1c-8c3e-1a2e4f5b6c7d" } },
+    "measures": {
+      "m1aaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa": { "duration": "1/1" },
+      "m2bbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb": { "duration": "1/1" },
+      "m3cccccc-cccc-4ccc-8ccc-cccccccccccc": { "duration": "1/1" }
+    }
+  },
+  "$lists": {
+    "parts": ["a8bb1c4a-4e0f-46f3-b9b2-6a1e2d3c4b5a"],
+    "measures": [
+      "m1aaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "m2bbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      "m3cccccc-cccc-4ccc-8ccc-cccccccccccc"
+    ]
+  },
+  "scoreInfo": { "title": "MultiRest" },
+  "musicSpans": {
+    "span-mr-0001-0003-aaaa-zzzzzzzzzzzz": {
+      "kind": "multiRest",
+      "part": "a8bb1c4a-4e0f-46f3-b9b2-6a1e2d3c4b5a",
+      "fromMeasure": "m1aaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "toMeasure": "m3cccccc-cccc-4ccc-8ccc-cccccccccccc"
+    }
+  }
+}

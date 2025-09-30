@@ -1,0 +1,29 @@
+{
+  "$schema": "../../schemas/v1/score.schema.json",
+  "$$docInfo": { "version": "1.0.0" },
+  "$definitions": {
+    "parts": {
+      "part-choir-def": { "partName": "Choir", "staffNames": ["S1","S2","A"], "clefs": ["G"], "twoLayersPerStaff": false },
+      "part-pno-def": { "partName": "Piano", "staffType": "grand", "staffNames": ["R.H.","L.H."], "clefs": ["G","F"] }
+    }
+  },
+  "$instances": {
+    "parts": {
+      "choir-s1": { "type": "part-choir-def", "index": 1, "layer": 1 },
+      "choir-s2": { "type": "part-choir-def", "index": 1, "layer": 2 },
+      "choir-a": { "type": "part-choir-def", "index": 1, "layer": 3 },
+      "pno-rh": { "type": "part-pno-def", "index": 1, "layer": 1 },
+      "pno-lh": { "type": "part-pno-def", "index": 1, "layer": 3 }
+    },
+    "measures": { "meas-001": { "duration": "1/1" } }
+  },
+  "$lists": { "parts": ["choir-s1","choir-s2","choir-a","pno-rh","pno-lh"], "measures": ["meas-001"] },
+  "scoreInfo": { "title": "Piano + Choir" },
+  "musicSpans": {
+    "s1": { "part": "choir-s1", "measure": "meas-001", "events": [ { "duration": "1/2", "pitches": [71] }, { "duration": "1/2", "pitches": [72] } ] },
+    "s2": { "part": "choir-s2", "measure": "meas-001", "events": [ { "duration": "1/1", "pitches": [67] } ] },
+    "a":  { "part": "choir-a",  "measure": "meas-001", "events": [ { "duration": "1/2", "pitches": [65] }, { "duration": "1/2", "pitches": [64] } ] },
+    "pno-r": { "part": "pno-rh", "measure": "meas-001", "events": [ { "duration": "1/1", "pitches": [62,65,67,71] } ] },
+    "pno-l": { "part": "pno-lh", "measure": "meas-001", "events": [ { "duration": "1/1", "pitches": [43,55] } ] }
+  }
+}

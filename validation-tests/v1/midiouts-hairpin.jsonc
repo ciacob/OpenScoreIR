@@ -1,0 +1,45 @@
+{
+  "$schema": "../../schemas/v1/score.schema.json",
+  "$$docInfo": { "version": "1.0.0" },
+  "$definitions": {
+    "parts": { "9a0b1c2d-3e4f-4a5b-8c6d-7e8f9a0b1c2d": { "partName": "Piano" } },
+    "midiModels": {
+      "712597b5-74ed-4b13-905d-ab26c5ef14de": {
+        "name": "hairpin",
+        "description": "Continuous volume change",
+        "hosts": ["events","attachments"],
+        "params": {
+          "channel": { "kind": "int" },
+          "$CCs": { "kind": "enum", "values": ["cc7","cc11","cc7+cc11"] },
+          "$from": { "kind": "int" },
+          "$to": { "kind": "int" },
+          "$fractionDuration": { "kind": "string" }
+        }
+      }
+    }
+  },
+  "$instances": {
+    "parts": { "55aa55aa-55aa-45aa-85aa-55aa55aa55aa": { "type": "9a0b1c2d-3e4f-4a5b-8c6d-7e8f9a0b1c2d" } },
+    "measures": { "ee22ee22-ee22-4e22-8e22-ee22ee22ee22": { "duration": "1/1" } }
+  },
+  "$lists": { "parts": ["55aa55aa-55aa-45aa-85aa-55aa55aa55aa"], "measures": ["ee22ee22-ee22-4e22-8e22-ee22ee22ee22"] },
+  "scoreInfo": { "title": "MIDI Hairpin" },
+  "musicSpans": {
+    "hp-0001": {
+      "part": "55aa55aa-55aa-45aa-85aa-55aa55aa55aa",
+      "measure": "ee22ee22-ee22-4e22-8e22-ee22ee22ee22",
+      "events": [
+        {
+          "duration": "1/1",
+          "pitches": [60,64,67],
+          "midiOuts": {
+            "0": {
+              "id": "712597b5-74ed-4b13-905d-ab26c5ef14de",
+              "params": { "$CCs": "cc7", "$from": 32, "$to": 100, "$fractionDuration": "1/1" }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

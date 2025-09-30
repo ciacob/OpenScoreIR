@@ -1,0 +1,44 @@
+{
+  "$schema": "../../schemas/v1/score.schema.json",
+  "$$docInfo": { "version": "1.0.0" },
+  "$definitions": {
+    "parts": { "violin-def": { "partName": "Violin", "clefs": ["G"] } },
+    "attachments": {
+      "tie-attach": { "name": "tie", "description": "ties forward", "hosts": ["events","pitches"] },
+      "slur-attach": {
+        "name": "slur", "description": "legato",
+        "hosts": ["events","pitches"],
+        "params": { "type": { "kind": "enum", "values": [ { "label":"start","value":1 }, { "label":"end","value":0 } ] } }
+      }
+    }
+  },
+  "$instances": {
+    "parts": { "violin-1": { "type": "violin-def" } },
+    "measures": { "m-01": { "duration": "1/1" } }
+  },
+  "$lists": { "parts": ["violin-1"], "measures": ["m-01"] },
+  "scoreInfo": { "title": "Ties & Slur" },
+  "musicSpans": {
+    "span-v1": {
+      "part": "violin-1",
+      "measure": "m-01",
+      "events": [
+        {
+          "duration": "1/2",
+          "pitches": [62, 65, 67, 71],
+          "attachments": {
+            "62": "tie-attach",
+            "65": "tie-attach",
+            "67": "tie-attach",
+            "71": { "id": "slur-attach", "params": { "type": 1 } }
+          }
+        },
+        {
+          "duration": "1/2",
+          "pitches": [62, 65, 67, 72],
+          "attachments": { "72": { "id": "slur-attach", "params": { "type": 0 } } }
+        }
+      ]
+    }
+  }
+}

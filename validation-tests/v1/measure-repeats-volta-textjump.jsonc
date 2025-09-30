@@ -1,0 +1,94 @@
+{
+  "$schema": "../../schemas/v1/score.schema.json",
+  "$$docInfo": { "version": "1.0.0" },
+  "$definitions": {
+    "parts": { "11111111-2222-4333-8444-555555555555": { "partName": "Strings" } },
+    "attachments": {
+      "repeat-attach-00000000-0000-4000-8000-000000000001": {
+        "name": "repeat",
+        "description": "start/end repeat",
+        "hosts": ["measures"],
+        "params": { "type": { "kind": "enum", "values": [ { "label": "start", "value": 1 }, { "label": "end", "value": 0 } ] } }
+      },
+      "volta-attach-00000000-0000-4000-8000-000000000002": {
+        "name": "volta",
+        "description": "alternate ending",
+        "hosts": ["measures"],
+        "params": { "index": { "kind": "int" } }
+      },
+      "textjump-attach-00000000-0000-4000-8000-000000000003": {
+        "name": "text jump",
+        "description": "Da Capo / Segno / Coda system",
+        "hosts": ["measures"],
+        "params": {
+          "type": { "kind": "enum", "values": [ { "label": "directions", "value": -1 }, { "label": "markers", "value": 0 } ] },
+          "detail": { "kind": "enum", "values": [
+            { "label": "capo", "value": -200 }, { "label": "segno", "value": -100 }, { "label": "fine", "value": 100 }, { "label": "coda", "value": 200 }
+          ] },
+          "linkageId": { "kind": "string" },
+          "text": { "kind": "string" }
+        }
+      }
+    }
+  },
+  "$instances": {
+    "parts": { "part-aaaa-0000-4000-8000-000000000000": { "type": "11111111-2222-4333-8444-555555555555" } },
+    "measures": {
+      "meas-1-0000-4000-8000-000000000001": { "duration": "1/1" },
+      "meas-2-0000-4000-8000-000000000002": { "duration": "1/1" },
+      "meas-3-0000-4000-8000-000000000003": { "duration": "1/1" }
+    }
+  },
+  "$lists": {
+    "parts": ["part-aaaa-0000-4000-8000-000000000000"],
+    "measures": [
+      "meas-1-0000-4000-8000-000000000001",
+      "meas-2-0000-4000-8000-000000000002",
+      "meas-3-0000-4000-8000-000000000003"
+    ]
+  },
+  "scoreInfo": { "title": "Repeats/Volta/TextJump" },
+  "musicSpans": {
+    "ms-1": {
+      "part": "part-aaaa-0000-4000-8000-000000000000",
+      "measure": "meas-1-0000-4000-8000-000000000001",
+      "events": [ { "duration": "1/1", "pitches": [60] } ]
+    },
+    "ms-2": {
+      "part": "part-aaaa-0000-4000-8000-000000000000",
+      "measure": "meas-2-0000-4000-8000-000000000002",
+      "events": [ { "duration": "1/1", "pitches": [62] } ]
+    },
+    "ms-3": {
+      "part": "part-aaaa-0000-4000-8000-000000000000",
+      "measure": "meas-3-0000-4000-8000-000000000003",
+      "events": [ { "duration": "1/1", "pitches": [64] } ]
+    }
+  },
+  // Measure-level attachments
+  "$instances": {
+    "parts": { "part-aaaa-0000-4000-8000-000000000000": { "type": "11111111-2222-4333-8444-555555555555" } },
+    "measures": {
+      "meas-1-0000-4000-8000-000000000001": {
+        "duration": "1/1",
+        "attachments": [
+          { "id": "repeat-attach-00000000-0000-4000-8000-000000000001", "params": { "type": 1 } },
+          { "id": "textjump-attach-00000000-0000-4000-8000-000000000003", "params": { "type": -1, "detail": -100, "linkageId": "A" } }
+        ]
+      },
+      "meas-2-0000-4000-8000-000000000002": {
+        "duration": "1/1",
+        "attachments": [
+          { "id": "volta-attach-00000000-0000-4000-8000-000000000002", "params": { "index": 1 } }
+        ]
+      },
+      "meas-3-0000-4000-8000-000000000003": {
+        "duration": "1/1",
+        "attachments": [
+          { "id": "repeat-attach-00000000-0000-4000-8000-000000000001", "params": { "type": 0 } },
+          { "id": "textjump-attach-00000000-0000-4000-8000-000000000003", "params": { "type": 0, "detail": 200, "linkageId": "A" } }
+        ]
+      }
+    }
+  }
+}

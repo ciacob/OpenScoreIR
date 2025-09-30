@@ -1,0 +1,18 @@
+{
+  "$schema": "../../schemas/v1/score.schema.json",
+  "$$docInfo": { "version": "1.0.0" },
+  "$definitions": { "parts": { "c0011223-4455-4666-8777-8899aabbccdd": { "partName": "Flute", "clefs": ["G"] } } },
+  "$instances": {
+    "parts": { "p-1234abcd-0000-4000-8000-000000000000": { "type": "c0011223-4455-4666-8777-8899aabbccdd" } },
+    "measures": {
+      "m-pu-1": { "duration": "1/4", "timeSignature": [4,4], "measureKind": "pickup" },
+      "m-1": { "duration": "1/1", "timeSignature": [4,4] }
+    }
+  },
+  "$lists": { "parts": ["p-1234abcd-0000-4000-8000-000000000000"], "measures": ["m-pu-1","m-1"] },
+  "scoreInfo": { "title": "Pickup" },
+  "musicSpans": {
+    "span-pu": { "part": "p-1234abcd-0000-4000-8000-000000000000", "measure": "m-pu-1", "events": [ { "duration": "1/4", "pitches": [76] } ] },
+    "span-1": { "part": "p-1234abcd-0000-4000-8000-000000000000", "measure": "m-1", "events": [ { "duration": "1/1", "pitches": [74] } ] }
+  }
+}

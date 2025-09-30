@@ -1,0 +1,1331 @@
+{
+    "schema": "TBD",
+    "$$docInfo": {
+        "version": "1.0",
+        "release": "2025/09/19 18:21:12"
+    },
+    // Abstract, general entity types. They form the base of score instances,
+    // e.g.: "violin", "fermata", "dynamic", "syllable".
+    "$definitions": {
+        // All the part types used in the score.
+        "parts": {
+            // A sample treble choir
+            // N.B.: This data source does not enforce the exact type of uid to
+            // be used (implementor is free to choose one that works well in
+            // multi-document editing context, and with expected per-document
+            // entities count).
+            "e8212c1d-6b4f-49b4-8406-aa19e58b2052": {
+                "partName": "Choir",
+                "partAbbrev": "Ch.",
+                // Can be omitted if "normal" (so this one could have been omitted), 
+                "staffType": "normal",
+                // Will be typically omitted, as staves of a part do not normally carry
+                // their own names.
+                // 
+                // But, given that this part definition is a generic "Choir" instead of
+                // specific "Soprano" / "Alto" parts, we can use staff naming to hint
+                // voice allocation instead.
+                //
+                // Our definition uses a `normal` staff, therefore each of its instances
+                // will create ONE staff, and will consume ONE of the below staff names
+                // (trimming them/repeating the last to adjust, if needed).
+                // Empty strings can be given here in order to skip naming staves. If
+                // `staffNames` are given, and the first string in-there is not empty,
+                // the `partName` is automatically hidden.
+                //
+                // Note that choirs can also be written out in-extenso, with dedicated
+                // definitions for each choir voice (e.g., Soprano, Alto, Tenor, Bass),
+                // and with instances made out of each of those definitions.
+                //
+                // Here on display we have the shortcut notation, and we can use that 
+                // successfully for any other homogeneous ensemble (e.g., strings orchestra,
+                // brass ensemble, etc.).
+                //
+                // N.B.: the `typeName` can also be used to override a part definition's name
+                // at part instance level.
+                "staffNames": [
+                    "S1",
+                    "S2",
+                    "A"
+                ],
+                // Initial clefs to distribute to created staves. Last clef will be repeated
+                // if needed (subsequent clef changes are to be delivered via measure/event
+                // attachments).
+                "clefs": [
+                    "G"
+                ],
+                // Whether to display two layers per staff using up/down stems (the default)
+                // In this case, we want one layer per choir staff, so we enforce it.
+                "twoLayersPerStaff": false,
+                // Can be omitted if playback is not needed
+                "patch": 114
+            },
+            // A sample percussion part (one percussionist).
+            "3fc4afcf-0ea1-4a05-a4da-b2ad51fe6fd3": {
+                "partName": "Percussion",
+                "partAbbrev": "Perc.",
+                "clefs": "P" // "perc" is also legit
+            },
+            // A sample piano
+            "373caf88-6a2a-4e8b-b343-d917149d98a8": {
+                "partName": "Piano",
+                "partAbbrev": "Pno.",
+                "staffType": "grand",
+                "patch": 113,
+                "staffNames": [
+                    "R.H.",
+                    "L.H."
+                ],
+                "twoLayersPerStaff": true
+            }
+        },
+        // Attachment types used in the score (NOT all, just samples).
+        // An attachment is anything that can be related to a measure, music span,
+        // event or pitch. Attachments could be provided via OOtB packages, downloaded
+        // as extras, or implemented locally by the end-user (provided his score
+        // editor implements an attachments designer).
+        // All of the above is just demo/samples.
+        "attachments": {
+            // A sample articulation (tremolo), with configurable speed.
+            "be6b8076-1960-4e57-b650-aa2eb777a1ad": {
+                "name": "tremolo",
+                "description": "Repeats the same note in quick succession.",
+                "hosts": [
+                    "events"
+                ],
+                "params": {
+                    "type": { // <-- This is the parameter's name, not a configuration directive.
+                        "kind": "enum", // <-- internally, we use "kind" everywhere.
+                        "values": [
+                            {
+                                // One dash: divide quarters into eights.
+                                "label": "2up",
+                                "value": 2
+                            },
+                            {
+                                // Two dashes: divide quarters into 16ths
+                                "label": "4up",
+                                "value": 4
+                            },
+                            {
+                                // Three dashes: repeat the original pitch fast as you can.
+                                "label": "prestissimo",
+                                "value": 8,
+                                "default": true
+                            }
+                        ]
+                    }
+                }
+            },
+            // A sample (forward) tie. Can be applied to events or non-rest pitches.
+            "79a037cb-b5a1-42e4-81a1-be46a631e37b": {
+                "name": "tie",
+                "description": "Ties to the same pitch immediately to the right.",
+                "hosts": [
+                    "events",
+                    "pitches"
+                ]
+            },
+            // A sample "slur". Can be configured to "start" and "stop".
+            "e38cc8c2-0e83-4945-8d2f-4c1e8a1f0c8f": {
+                "name": "slur",
+                "description": "Indicates legato playing.",
+                "hosts": [
+                    "events",
+                    "pitches"
+                ],
+                "params": {
+                    "type": {
+                        "kind": "enum",
+                        "values": [
+                            {
+                                "label": "start",
+                                "value": 1
+                            },
+                            {
+                                "label": "end",
+                                "value": 0
+                            }
+                        ]
+                    },
+                    // Optional, but useful when slurring across staves in multi-staff instruments.
+                    "id": {
+                        "kind": "string"
+                    }
+                }
+            },
+            // A sample fermata. Can be applied to events and configured.
+            "4f253e20-c44d-4ad6-957d-3ce9e0997673": {
+                "name": "fermata",
+                "description": "Lengthens the duration of the related note.",
+                "hosts": [
+                    "events"
+                ],
+                "params": {
+                    "duration": {
+                        "kind": "enum",
+                        "values": [
+                            {
+                                "label": "short",
+                                "value": 1.3
+                            },
+                            {
+                                "label": "normal",
+                                "value": 1.6,
+                                "default": true
+                            },
+                            {
+                                "label": "long",
+                                "value": 2.5
+                            }
+                        ]
+                    }
+                }
+            },
+            // A sample reusable syllable, for sung text. Different text for different voices
+            // is representable (via attaching syllables to events related to the correct
+            // layers). Representing multiple verses underneath the same music is not in scope.
+            "3825b3cb-3aa1-4b6e-a193-8996970195b5": {
+                "name": "syllable",
+                "description": "Places text underneath a note for sung text.",
+                // Can only attach a syllable to a non-empty event (thus, NOT a rest).
+                "hosts": [
+                    {
+                        "baseType": "events",
+                        "filter": {
+                            "kind": "comparison",
+                            "source": "pitches.length",
+                            "operator": "greaterThan",
+                            "value": 0
+                        }
+                    }
+                ],
+                "params": {
+                    // Whether to display a dash before ("end"), before and after
+                    // ("middle") or after ("start").
+                    "type": {
+                        "kind": "enum",
+                        "values": [
+                            "start",
+                            "middle",
+                            "end"
+                        ]
+                    },
+                    // Used together with a "start" and a "stop" syllable to draw extension lines
+                    // instead of dashes.
+                    "isMelisma": {
+                        "kind": "bool"
+                    },
+                    // The actual text to display. Can be missing for isMelisma/end.
+                    "text": "string"
+                }
+            },
+            // A sample "simple repetition", configurable for start or end, as needed.
+            // Note: this is only a data structure. Implementor has the responsibility of
+            // enforcing any sanity checks (e.g, start repeat should come before end repeat),
+            // end should be given if start was given, playback should stop after one repetition
+            // (per volta, if that exists, etc.).
+            "9fe32c14-b5d9-4f92-816b-1b38434bb006": {
+                "name": "repeat",
+                "description": "Indicates playing again the same notated fragment.",
+                "hosts": [
+                    "measures" // <-- Can only be attached to measure instances
+                ],
+                "params": {
+                    "type": {
+                        "kind": "enum",
+                        "values": [
+                            {
+                                "label": "start",
+                                "value": 1
+                            },
+                            {
+                                "label": "end",
+                                "value": 0
+                            }
+                        ]
+                    }
+                }
+            },
+            // A sample, simple volta, configurable for an ordinal index (there can be
+            // several of them, and at least two make sense, and they should be contiguous,
+            // but we cannot enforce that at this level, and should be implementor's
+            // responsibility anyway).
+            "4410e72d-9878-4065-a3ce-4a1a3933b689": {
+                "name": "volta",
+                "description": "Provides alternate ending for repetitions.",
+                "hosts": [
+                    "measures"
+                ],
+                "params": {
+                    "index": "uint"
+                }
+            },
+            // A sample, configurable text jump markings system (e.g., "D'al segno al coda").
+            // Again, we cannot enforce sanity checks at this level, it will be the
+            // implementor's responsibility (e.g., a "d'al segno" must have some "segno"
+            // prior to it, not after, playback should only jump once per text marking, etc.).
+            // N.B.: you manipulate the `type` and `detail` parameters to produce all the traditional
+            // text jump instructions and markings.
+            "c2d9341b-9c8e-4c15-b940-4ee6e9a0bcfc": {
+                "name": "text jump",
+                "description": "Text based jump markings.",
+                "hosts": [
+                    "measures"
+                ],
+                "params": {
+                    // N.B.: text jumps are configurable by several attachments, having all the same `linkageId`.
+                    //
+                    // Example: to create a "D'al Segno al Coda" text jump, you attach to the same measure these two attachments:
+                    // (1) Attachment 1 that has: `type`="directions" and `detail`="segno"; and
+                    // (2) Attachment 2 that has: `type`="directions" and `detail`="coda".
+                    // Remember to give both the same value for `linkageId`.
+                    //
+                    // To create the actual <segno> marking, you attach one attachment in a previous measure of your score,
+                    // and configure the attachment to use: `type`="markers" and `detail`="segno". You also give this one
+                    // the same `linkageId`.
+                    //
+                    // Last but not least, to create the actual "Coda" marking, you attach to some later measure this
+                    // attachment: `type`="markers" and `detail`="coda". And you also give this too the same `linkageId`.
+                    //
+                    // This enables the host implementor to recognize and correctly interpret text jump instructions, event if
+                    // several jumps existed in the same score.
+                    "type": {
+                        "kind": "enum",
+                        "values": [
+                            {
+                                "label": "directions", // Creates, e.g., a "D'a Capo al Fine".
+                                "value": -1
+                            },
+                            {
+                                "label": "markers", // Creates, e.g., one <segno> marking in the score.
+                                "value": 0
+                            }
+                        ]
+                    },
+                    "detail": {
+                        "kind": "enum",
+                        "values": [
+                            {
+                                "label": "capo", // Can only be used as `direction`: "D'a Capo...".
+                                "value": -200
+                            },
+                            {
+                                "label": "segno", // As `direction`: "D'al <segno>..."; as `marker`: to place a <segno> marking in the score.
+                                "value": -100
+                            },
+                            {
+                                "label": "fine", // As `direction`: "...al Fine"; as `marker`: to place a "Fine" marking in the score.
+                                "value": 100
+                            },
+                            {
+                                "label": "coda", // As `direction`: "...al coda"; as `marker`: to place a "Coda" marking in the score.
+                                "value": 200
+                            }
+                        ]
+                    },
+                    "linkageId": {
+                        "kind": "string"
+                    },
+                    // Arbitrary text to append to the attachment, if needed (e.g., to provide more details to players).
+                    "text": {
+                        "kind": "string"
+                    }
+                }
+            }
+        },
+        // Non-pitched percussion sets available to be used throughout the score.
+        // One uses percussion sets via `events` of `kind` "percussion". Inside, you
+        // give a `setId` (the id of a specific percussion set to use). The id can be
+        // omitted if there is only one set defined. A "percussion" `event` can only use
+        // one percussion set at a time; use layering to overcome.
+        // 
+        // Inside "percussion" `events`, use the `strikes` property to trigger one of the
+        // `combos` that were specified inside of the related set. You refer to a combo
+        // by its `shortcut`, which should be a unique string, unless you want the same
+        // shortcut to trigger several `combos`.
+        // 
+        // N.B.: If the implementor only cares about playback, and some raw,
+        // General MIDI percussion playback is acceptable, then defining 
+        // `percussionSets` can be bypassed entirely, and GM percussion can be
+        // triggered via "percussion" `events` alone. In this case, you do use the 
+        // `pitches` property, and you make sure the correct MIDI `pitches` are given
+        // in-there. 
+        // 
+        // In any other cases, using the `pitches` property with a "percussion" `event`
+        // makes no sense. If both `strikes` and `pitches` are given, the later is ignored.
+        // Also, `notes` is always ignored for "percussion" `events`.
+        "percussionSets": {
+            "57430f3a-8cff-4df8-9814-1c2f26821698": {
+                "name": "Small set",
+                "description": "Snare and clash cymbals only",
+                "combos": [
+                    // Sample snare combo. The `combos` will usually have a single instrument,
+                    // (meaning they trigger a single MIDI pitch, to emit o single sound),
+                    // but they can also trigger multiple MIDI pitches to create a richer
+                    // sound. In orchestral scores, though, each combo would typically have
+                    // only one instrument registered.
+                    {
+                        "name": "Snare",
+                        // This `shortcut` is just an internally agreed-upon string to be picked-up
+                        // and used later, in "percussion" `events`.
+                        "shortcut": "D",
+                        // The MIDI key(s) to trigger, in order to produce the combo's sound.
+                        "pitches": [
+                            38
+                        ],
+                        // Redundant, and can be safely omitted unless a particular
+                        // implementor needs such information.
+                        "notes": [
+                            {
+                                "step": "D",
+                                "alteration": 0,
+                                "octave": 2
+                            }
+                        ],
+                        // This can be omitted if the combo uses regular note-heads, as is the case
+                        // here (we included it for example sake). The implementor should provide the 
+                        // dictionary of values to be used in-here. Standardized values should be
+                        // preferred whenever available.
+                        "noteheads": {
+                            "quarter": "black", // head to be used for notes up to a quarter
+                            "half": "minim", // head to be used for halves
+                            "whole": "semibreve" // head to be used for while notes
+                        },
+                        // A 5-lines staff has 9 built-in positions,
+                        // numbered 0 to 8, counting from its top line, through spaces, down to its 
+                        // bottom line. To access higher positions, negative numbers are used. To
+                        // access lower positions, numbers greater than 8 are used. The position
+                        // `3` here is what "upper C" looks like in violin (G) clef.
+                        "staffPosition": 3,
+                        // Defaults to `true` (up stem), so this one could be omitted.
+                        "hasUpStem": true
+                    },
+                    {
+                        "name": "Splash Cymbal",
+                        "shortcut": "X",
+                        "pitches": [
+                            55
+                        ],
+                        "noteheads": {
+                            "quarter": "x-black",
+                            "half": "x-minim",
+                            "whole": "x-semibreve"
+                        },
+                        "staffPosition": -4
+                    }
+                ]
+            }
+        },
+        // Predefined MIDI models that can be instantiated either explicitly (for sending
+        // out predefined messages) or ad-hoc (via `midiOuts` hooks). Enables the implementor
+        // to pack low-level MIDI information together with higher-level score/musicological
+        // information. This can prove helpful when playback involves controlling physical
+        // or virtual MIDI devices. Like attachments, midi models can be provided via OOtB
+        // packs, downloaded as add-ons, or defined by the end-user.
+        //
+        // N.B.: it is expected that the implementor handles basic MIDI playback by itself
+        // (e.g., sending note on/off messages on correct channels/patches). The midi models
+        // should only be used to augment that (if needed).
+        "midiModels": {
+            // Sample: quickly deploy a note on and note off message towards an out-of-range
+            // pitch, in order to trigger a timbral change in the receiver synth.
+            "943e19b0-eab9-4099-9c2d-1ac76fca08cf": {
+                "name": "key switch",
+                "description": "Trigger timbral change via out of range notes.",
+                "hosts": [
+                    "measures",
+                    "events",
+                    "attachments"
+                ],
+                "params": {
+                    "channel": {
+                        "kind": "int",
+                        "default": 1
+                    },
+                    "velocity": {
+                        "kind": "int",
+                        "default": 64
+                    },
+                    // Translated parameter. Will cause a "note off" to be triggered after
+                    // this duration.
+                    "$duration": {
+                        // Integer ticks or absolute nano-seconds, implementor decides.
+                        "kind": "int",
+                        "isTranslated": true,
+                        "default": 480
+                    },
+                    // Alternate to "$duration" to use the fractions system employed by
+                    // events. Ignored if `$duration` is also given.
+                    "$fractionDuration": {
+                        "kind": "string",
+                        "isTranslated": true,
+                        "default": "1/32"
+                    },
+                    "note": {
+                        "kind": "int"
+                    }
+                }
+            },
+            // For legacy synths, another way to select a timbral variation.
+            "07b59505-47cf-43ab-9421-dfca5bcc4aea": {
+                "name": "programChange",
+                "description": "Trigger timbral change via program (and bank) change.",
+                "hosts": [
+                    "measures",
+                    "events",
+                    "attachments"
+                ],
+                "params": {
+                    "channel": {
+                        "kind": "int",
+                        "default": 1
+                    },
+                    // Either (or both) of the most/least significant bytes can be bypassed
+                    // with `-1`. These are both translated parameters. The implementor will
+                    // know NOT to send CC0 if `$bank_msb` is `-1`, and NOT to send CC32 if
+                    // `$bank_lsb` is -1.
+                    //
+                    // Optional. "Most significant byte" for selecting a bank.
+                    "$bank_msb": {
+                        "kind": "int",
+                        "isTranslated": true,
+                        "default": -1
+                    },
+                    // Optional. "Least significant byte" for selecting a bank.
+                    "$bank_lsb": {
+                        "kind": "int",
+                        "isTranslated": true,
+                        "default": -1
+                    },
+                    // Optional, combined bank number, in case preferred. If provided, `bank_msb`
+                    // and `$bank_lsb` shall be ignored. The combined value must be:
+                    // `msb*128 + lsb`. Can also be bypassed with `-1`.
+                    "$bank": {
+                        "kind": "int",
+                        "isTranslated": true,
+                        "default": -1
+                    },
+                    // Optional. Whether to re-emit the message even if is same as last sent.
+                    "$sendIfUnchanged": {
+                        "kind": "bool",
+                        "default": false,
+                        "isTranslated": true
+                    },
+                    // Actual program change.
+                    "program": {
+                        "kind": "int"
+                    }
+                }
+            },
+            // Convenience way to program a channel-wide increase or decrease in
+            // volume.
+            "712597b5-74ed-4b13-905d-ab26c5ef14de": {
+                "name": "hairpin",
+                "description": "Trigger continuous change in volume (and/or expression).",
+                "hosts": [
+                    "events",
+                    "attachments"
+                ],
+                "params": {
+                    "channel": {
+                        "kind": "int",
+                        "default": 1
+                    },
+                    // What Continuous Controllers to sent values to. All traditional
+                    // CCs used for controlling volume are supported, including combinations.
+                    // The same value will be sent in parallel to all the CCs in the combination.
+                    // If this is not flexible enough, you can run several `hairpin` models in
+                    // parallel, with different configurations.
+                    // This is a translated parameter (the implementor needs to compile in advance
+                    // the actual MIDI messages to send).
+                    "$CCs": {
+                        "kind": "enum",
+                        "isTranslated": true,
+                        // Shortcut (were label and values are the same, we omit the Object)
+                        "values": [
+                            {
+                                "label": "cc7",
+                                "value": "cc7",
+                                "default": true
+                            },
+                            "cc11",
+                            "cc1",
+                            "cc7+cc11",
+                            "cc7+cc1",
+                            "cc11+cc1",
+                            "cc7+cc11+cc1"
+                        ]
+                    },
+                    // The easing to use for value interpolation.
+                    // This is a translated parameter. The exact curve to use should be configurable
+                    // via the implementor.
+                    "$easing": {
+                        "kind": "enum",
+                        "isTranslated": true,
+                        "values": [
+                            {
+                                "label": "linear",
+                                "value": 0,
+                                "default": true
+                            },
+                            {
+                                "label": "easeIn",
+                                "value": 1
+                            },
+                            {
+                                "label": "easeOut",
+                                "value": 2
+                            },
+                            {
+                                "label": "easeInOut",
+                                "value": 3
+                            }
+                        ]
+                    },
+                    // The MIDI value to start interpolating from 
+                    "$from": {
+                        "kind": "int",
+                        "isTranslated": true
+                    },
+                    // The MIDI value to end interpolating at 
+                    "$to": {
+                        "kind": "int",
+                        "isTranslated": true
+                    },
+                    // Translated parameter. The time to interpolate over.
+                    "$duration": {
+                        // Integer ticks or absolute nano-seconds, implementor decides.
+                        "kind": "int",
+                        "isTranslated": true
+                    },
+                    // Alternate to "$duration", to use the fractions system employed by
+                    // `events`. Ignored if `$duration` is also given.
+                    "$fractionDuration": {
+                        "kind": "string",
+                        "isTranslated": true
+                    },
+                    // Optional. Right-translates the entire hairpin curve by the specified time.
+                    // Same format as for `$duration`. This enables one to do complex, continuous 
+                    // volume sculpting patterns, by chaining individual, delayed bends.
+                    // As an alternative, one can use a `midiOutGroup` of `kind` "chain" to chain
+                    // hairpins (the needed `$delays` will be transparently set internally).
+                    "$delay": {
+                        "kind": "int",
+                        "isTranslated": true,
+                        "default": 0
+                    },
+                    // Alternative to `$delay`, to use the fractions system instead.
+                    // Ignored if "$delay" is also given.
+                    "$fractionDelay": {
+                        "kind": "int",
+                        "isTranslated": true,
+                        "default": 0
+                    },
+                    // Optional, the fraction of time volume changing is postponed, so that we
+                    // can hear the unaltered original dynamic. Always a fraction of the
+                    // total, computed duration.
+                    "$head": {
+                        "kind": "string",
+                        "default": "1/8",
+                        "isTranslated": true
+                    },
+                    // Optional, the fraction of time volume changing is frozen, so that we
+                    // can hear the final dynamic stabilize. Always a fraction of the
+                    // total, computed duration. All volume changing must have completed before
+                    // entering the tail.
+                    "$tail": {
+                        "kind": "string",
+                        "default": "1/8",
+                        "isTranslated": true
+                    }
+                }
+            },
+            // Convenience way to program a glissando via a controlled and timed stream of
+            // interpolated pitch bend messages.
+            "63608228-c763-4763-ae1b-a82bf8efa7f9": {
+                "name": "glissando",
+                "description": "Bends from current pitch to another, with a head and tail.",
+                "hosts": [
+                    "events",
+                    "attachments"
+                ],
+                "params": {
+                    "channel": {
+                        "kind": "int",
+                        "default": 1
+                    },
+                    // The easing to use for value interpolation.
+                    // The exact curve to use should be configurable via the implementor.
+                    "$easing": {
+                        "kind": "enum",
+                        "isTranslated": true,
+                        "values": [
+                            {
+                                "label": "linear",
+                                "value": 0,
+                                "default": true
+                            },
+                            {
+                                "label": "easeIn",
+                                "value": 1
+                            },
+                            {
+                                "label": "easeOut",
+                                "value": 2
+                            },
+                            {
+                                "label": "easeInOut",
+                                "value": 3
+                            }
+                        ]
+                    },
+                    // The number of semitones to bend to. Positive bends up, negative
+                    // bends down. Maximum of 12 semitones available, either up or down.
+                    "$semitones": {
+                        "kind": "int",
+                        "isTranslated": true
+                    },
+                    // Optional, if mere semitones will be too coarse. A semitone has 100 cents.
+                    "$cents": {
+                        "kind": "int",
+                        "isTranslated": true,
+                        "default": 0
+                    },
+                    // The time to interpolate over. Integer ticks or absolute nano-seconds,
+                    // implementor decides.
+                    "$duration": {
+                        "kind": "int",
+                        "isTranslated": true
+                    },
+                    // Alternative to "$duration", to use the fractions system employed by
+                    // `events`. Ignored if `$duration` is also given.
+                    "$fractionDuration": {
+                        "kind": "string",
+                        "isTranslated": true
+                    },
+                    // Optional. Right-translates the entire bending curve by the specified time.
+                    // Same format as for `$duration`. This enables one to do complex, continuous 
+                    // bending patterns, by chaining individual, delayed bends.
+                    // As an alternative, one can use a `midiOutGroup` of type "chain" to chain
+                    // bends (the needed `$delays` will be transparently set internally).
+                    "$delay": {
+                        "kind": "int",
+                        "isTranslated": true,
+                        "default": 0
+                    },
+                    // Alternative to `$delay`, to use the fractions system instead.
+                    // Ignored if "$delay" is also given.
+                    "$fractionDelay": {
+                        "kind": "int",
+                        "isTranslated": true,
+                        "default": 0
+                    },
+                    // Optional, the fraction of time bending is postponed, so that we
+                    // can hear the unaltered original pitch. Always a fraction of the
+                    // total, computed duration.
+                    "$head": {
+                        "kind": "string",
+                        "default": "1/8",
+                        "isTranslated": true
+                    },
+                    // Optional, the fraction of time bending is frozen, so that we
+                    // can hear the final pitch stabilize. Always a fraction of the
+                    // total, computed duration. All bending must have completed before
+                    // entering the tail.
+                    "$tail": {
+                        "kind": "string",
+                        "default": "1/8",
+                        "isTranslated": true
+                    },
+                    // Optional, how to reset current bending before starting the 
+                    // current one. By default, resets to middle position (no bend).
+                    "$preReset": {
+                        "kind": "enum",
+                        "isTranslated": true,
+                        "values": [
+                            {
+                                "label": "middle",
+                                "value": 0,
+                                "default": true
+                            },
+                            {
+                                "label": "ceil",
+                                "value": 1
+                            },
+                            {
+                                "label": "floor",
+                                "value": -1
+                            },
+                            {
+                                "label": "none",
+                                "value": 2
+                            }
+                        ]
+                    },
+                    // Optional, how to reset current bending after completing the 
+                    // current one. By default, resets to middle position (no bend).
+                    "$postReset": {
+                        "kind": "enum",
+                        "isTranslated": true,
+                        "values": [
+                            {
+                                "label": "middle",
+                                "value": 0,
+                                "default": true
+                            },
+                            {
+                                "label": "ceil",
+                                "value": 1
+                            },
+                            {
+                                "label": "floor",
+                                "value": -1
+                            },
+                            {
+                                "label": "none",
+                                "value": 2
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    // Concrete, specific entities to reference throughout the score,
+    // e.g., "Layer 1 of 2nd violin", long fermata", "syllable A", etc. 
+    // 
+    // Note: Score can also use ad-hoc instances that are not explicitly
+    // listed here. Particularly true when listing them will be futile or
+    // impractical (e.g. "tie" or "syllable").
+    "$instances": {
+        // Concrete parts playing in this score. "Parts" in the extended sense of
+        // separate playing entities.
+        "parts": {
+            // First (and only) playing Choir, first layer
+            "9d1cb340-9af5-4b4a-a54c-8ea5b1a6122c": {
+                "type": "e8212c1d-6b4f-49b4-8406-aa19e58b2052",
+                "typeName": "Choir", // Can be used to override the part name at instance level
+                "index": 1,
+                "layer": 1
+            },
+            // First (and only) playing Choir, second layer
+            "6c096481-6db0-4943-abb1-871ab2379351": {
+                "type": "e8212c1d-6b4f-49b4-8406-aa19e58b2052",
+                "typeName": "Choir",
+                "index": 1,
+                "layer": 2
+            },
+            // First (and only) playing Choir, third layer
+            "56307add-3987-4726-981e-1d4eaa969aff": {
+                "type": "e8212c1d-6b4f-49b4-8406-aa19e58b2052",
+                "typeName": "Choir",
+                "index": 1,
+                "layer": 3
+            },
+            // First (and only) playing Piano, first layer (on right hand staff)
+            "e448d7a8-171d-421f-9042-f93b79dd8f15": {
+                "type": "373caf88-6a2a-4e8b-b343-d917149d98a8",
+                "typeName": "Piano",
+                "index": 1,
+                "layer": 1
+            },
+            // First (and only) playing Piano, third layer (on left hand staff).
+            // NOTE: we avoid specifying the target staff, as it is derived from
+            // from the layer number and the part's `twoLayersPerStaff` setting.
+            "fa72a79a-6a88-4a66-bb43-c8ba4576062a": {
+                "type": "373caf88-6a2a-4e8b-b343-d917149d98a8",
+                "typeName": "Piano",
+                "index": 1,
+                "layer": 3
+            },
+            // A small percussion track. Note that we need not place it properly
+            // here, since only the `$lists` order is normative. In-there, our
+            // percussion part instance id sits correctly, in-between the choir
+            // and the piano.
+            "68955beb-3de6-46ae-841d-14dd0245d5ad": {
+                "type": "3fc4afcf-0ea1-4a05-a4da-b2ad51fe6fd3",
+                "typeName": "Percussion"
+            }
+        },
+        // Concrete declared measures of this score. 
+        // N.B.: one does not need to declare all measure instances of the score if
+        // they don't have attachments and don't override previous measure's attributes
+        // (e.g., different `timeSignature`, different duration, etc.). But, at the very least,
+        // the `id` of every measure instance must be listed under `$lists`/`measures`.
+        // That's because measures' number is respectively inferred based on their position
+        // inside "$lists/measures" (unless overridden locally via `number`).
+        "measures": {
+            "bf867e95-7198-4b4a-8d15-a55613a56327": {
+                // Only needed if different than the `duration` fraction.
+                "timeSignature": [
+                    4,
+                    4
+                ],
+                // This is the minimum and recommended duration of the measure, as a fraction
+                // of the "whole" musical duration.
+                "duration": 1
+            },
+            "31b9b741-0933-4758-bf99-a0fc519b6265": {
+                "duration": 1,
+                "barline": "thin-thick"
+                // Other legit keys are: `keySignature`, `attachments`.
+            }
+        }
+    },
+    // Explicit ordering for part and measure instances.
+    "$lists": {
+        // IDs of defined part instances
+        "parts": [
+            // CHOIR
+            // Instance 1 (staff 1, Soprano 1, layer 1; the Choir only uses one layer per staff,
+            // as per the customized setting)
+            "9d1cb340-9af5-4b4a-a54c-8ea5b1a6122c",
+            // Instance 2 (staff 2, Soprano 2, layer 2)
+            "6c096481-6db0-4943-abb1-871ab2379351",
+            // Instance 3 (staff 3, Alto, layer 3)
+            "56307add-3987-4726-981e-1d4eaa969aff",
+            // PERCUSSION (just one instance/staff/layer)
+            "68955beb-3de6-46ae-841d-14dd0245d5ad",
+            // PIANO
+            // Instance 1 (right hand staff, layer 1; a layer 2 was not provided - if it were,
+            // it was displayed on right hand staff, because piano uses two-layers per staff,
+            // as per the default setting)
+            "e448d7a8-171d-421f-9042-f93b79dd8f15",
+            // Instance 2 (left hand staff, layer 3; a layer 4 was not provided)
+            "fa72a79a-6a88-4a66-bb43-c8ba4576062a"
+        ],
+        // IDs of defined measure instances
+        "measures": [
+            "bf867e95-7198-4b4a-8d15-a55613a56327",
+            "31b9b741-0933-4758-bf99-a0fc519b6265"
+        ]
+    },
+    // Score metadata
+    "scoreInfo": {
+        "title": "Lorem ipsum",
+        "subtitle": "For SATB with Piano",
+        "composer": "John Doe"
+    },
+    // Fragments of music related to part and measure instances.
+    "musicSpans": {
+        // First measure, treble choir, first layer (S1)
+        "6a8c35be-3219-48b1-9fb6-0ba1da650c79": {
+            // N.B.: The music span also has a `kind` attribute, implicitly "regular"
+            // and, thus, omitted. The other supported value is "multiRest" , which renders
+            // `measure` and `events` obsolete, and require in-lieu `fromMeasure` and `toMeasure`,
+            // both mandatory and holding measure instance ids. These are useful for representing
+            // multi measure rests, usually in parts notation.
+
+            "part": "9d1cb340-9af5-4b4a-a54c-8ea5b1a6122c",
+            "measure": "bf867e95-7198-4b4a-8d15-a55613a56327",
+            // An event is a cluster of 0, 1 or more pitches sustained
+            // throughout a duration. These are rendered as a rest, a note or
+            // a chord, respectively.
+            "events": [
+                // First event in measure
+                {
+                    // This is a genuine fraction. Also accepted formats are: [1,2] (Array)
+                    // or {"num": 1, "den": 2}. All musical durations are to be handled using
+                    // genuine fraction logic, and only exported to other formats (e.g., duration
+                    // units) upon export to interchange formats.
+                    "duration": "1/2",
+                    // If there are no pitches, the `pitches` Array can be omitted
+                    // entirely.
+                    "pitches": [
+                        71
+                    ],
+                    // Optional, but could save CPU. If "noteSymbol" is missing, the renderer
+                    // would have to infer it from "duration", along with any dot(s).
+                    "noteSymbol": {
+                        "type": "half",
+                        // Normally omitted if not needed.
+                        "numDots": 0
+                    },
+                    // Optional, but could improve score fidelity in tonal contexts. If "notes"
+                    // is missing, the renderer would have to infer it from "pitches", which
+                    // might prove challenging.
+                    "notes": [
+                        {
+                            "step": "B",
+                            "alteration": 0,
+                            "octave": 4
+                        }
+                    ],
+                    // This is also optional and entirely redundant, as this can be cheaply inferred
+                    // from a missing/empty `pitches`. But, if an implementor feels like they need
+                    // to be explicitly signaling rests, the `isRest` flag _is_ available.
+                    "isRest": false,
+                    // Can be omitted if not needed. 
+                    "attachments": {
+                        // By convention MIDI `0` is not used (would be rendered as a rest if used).
+                        // Therefore, we indicate the key `0` to indicate the attachment is to be
+                        // assigned to the event itself, not a particular pitch it holds.
+                        "0": {
+                            "id": "3825b3cb-3aa1-4b6e-a193-8996970195b5",
+                            "params": {
+                                "type": "start",
+                                "text": "A"
+                            }
+                        }
+                    },
+                    // Sample MIDI crescendo using linear interpolation on CC7 of
+                    // channel 1 (defaults).
+                    "midiOuts": {
+                        "0": {
+                            "id": "712597b5-74ed-4b13-905d-ab26c5ef14de",
+                            "params": {
+                                "$from": 48,
+                                "$to": 127,
+                                // Scheduled interpolation duration extends past the
+                                // duration of this event, consuming the entire measure.
+                                "$fractionDuration": 1 // Shortcut, converted to "1/1", i.e., a "whole".
+                            }
+                        }
+                    }
+                },
+                // Second event in measure
+                {
+                    "duration": "1/2",
+                    "pitches": [
+                        72
+                    ]
+                }
+            ]
+        },
+        // First measure, treble choir, second layer (S2)
+        "ef993645-e526-44f1-b1d4-06f087114f48": {
+            "part": "6c096481-6db0-4943-abb1-871ab2379351",
+            "measure": "bf867e95-7198-4b4a-8d15-a55613a56327",
+            "events": [
+                {
+                    "duration": "1",
+                    "pitches": [
+                        67
+                    ]
+                }
+            ]
+        },
+        // First measure, treble choir, third layer (A)
+        "43e3345e-d16a-4985-9dc0-ffa5136bea9c": {
+            "part": "56307add-3987-4726-981e-1d4eaa969aff",
+            "measure": "bf867e95-7198-4b4a-8d15-a55613a56327",
+            "events": [
+                {
+                    "duration": "1/2",
+                    "pitches": [
+                        65
+                    ]
+                },
+                {
+                    "duration": "1/2",
+                    "pitches": [
+                        64
+                    ]
+                }
+            ]
+        },
+        // First measure, percussion
+        "2b5bcb70-3ffa-479d-ac49-cf1a4c6a10d8": {
+            "part": "68955beb-3de6-46ae-841d-14dd0245d5ad",
+            "measure": "bf867e95-7198-4b4a-8d15-a55613a56327",
+            "events": [
+                {
+                    "kind": "percussion",
+                    "setId": "57430f3a-8cff-4df8-9814-1c2f26821698",
+                    "duration": "1",
+                    // Trigger the snare. We'll make that snare roll via an attachment
+                    "strikes": [
+                        "D"
+                    ],
+                    "attachments": {
+                        // Attach "roll" to this entire event. No params needed (we'l use the
+                        // default "prestissimo" value) so we can take the shortcut.
+                        "0": {
+                            "id": "be6b8076-1960-4e57-b650-aa2eb777a1ad"
+                        }
+                    }
+                }
+            ]
+        },
+        // First measure, piano, layer 1 (on right-hand staff)
+        "631e8d71-0f07-4996-9dd8-d272b820f5e1": {
+            "part": "e448d7a8-171d-421f-9042-f93b79dd8f15",
+            "measure": "bf867e95-7198-4b4a-8d15-a55613a56327",
+            "events": [
+                {
+                    "duration": "1/2",
+                    // Pitches are laid out from bass to descant (first given pitch is the bass).
+                    "pitches": [
+                        62,
+                        65,
+                        67,
+                        71
+                    ],
+                    "attachments": {
+                        "62": "79a037cb-b5a1-42e4-81a1-be46a631e37b", // tie the D
+                        "65": "79a037cb-b5a1-42e4-81a1-be46a631e37b", // tie the F
+                        "67": "79a037cb-b5a1-42e4-81a1-be46a631e37b", // tie the G
+                        // Don't tie the B; it progresses to C, for a "long" appoggiatura.
+                        // Instead, B anc C slur together. 
+                        "71": { // Start the slur on B
+                            "id": "e38cc8c2-0e83-4945-8d2f-4c1e8a1f0c8f",
+                            "params": {
+                                "type": 1
+                            }
+                        }
+                    }
+                },
+                {
+                    "duration": "1/2",
+                    "pitches": [
+                        62,
+                        65,
+                        67,
+                        72
+                    ],
+                    "attachments": {
+                        "72": { // End the slur on C
+                            "id": "e38cc8c2-0e83-4945-8d2f-4c1e8a1f0c8f",
+                            "params": {
+                                "type": 0
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        // First measure, piano, layer 3 (first on left-hand staff)
+        "fe41819b-4b2b-4460-96a0-eb85d92a8c51": {
+            "part": "fa72a79a-6a88-4a66-bb43-c8ba4576062a",
+            "measure": "bf867e95-7198-4b4a-8d15-a55613a56327",
+            "events": [
+                // Small, short, dissonant A flat grace right before the G doubled pedal, to draw attention
+                // (and maybe enrich the bass harmonics).
+                {
+                    // Default kind of `event`s is "regular", commonly omitted; "grace" must be given 
+                    // explicitly.
+                    "kind": "grace",
+                    // Whether to slash this grace event (default `true` for graces, commonly omitted).
+                    "useSlash": true,
+                    // Whether to slur this grace event to the next regular event having pitches
+                    // i.e., not a rest. This is `true` by default for graces and commonly omitted.
+                    // It can also be set to `false`, and common slur attachments be used instead,
+                    // but for simple/typical grace scenarios, the default `useSlur` is cheeper to
+                    // for both CPU and the author.
+                    "useSlur": true,
+                    // Default `false` and commonly omitted, as graces usually "steal" their
+                    // undeclared time from the note just before. Note that this data structure
+                    // has no OOtB representation about the exact duration the player should
+                    // assign to grace events (of course, a custom, user-provided attachment could be
+                    // created to fill that gap). The only enforcement that we make OOtB regarding
+                    // grace events is that their duration never counts towards the parent `musicSpan`
+                    // total duration.
+                    "stealNext": false,
+                    // For graces, duration can serve for inferring the symbol they use for drawing
+                    // (if `noteSymbol` is not given, as omitting it _is_ legit), or it could also serve
+                    // as the base for calculating the playback duration (player can decide whether
+                    // to use it or not).
+                    "duration": "1/8",
+                    "pitches": [
+                        44
+                    ],
+                    // Other than that, graces are just true `event` ad-hoc instances. They can receive
+                    // attachments, etc. The `notes` is also optional, but here it helps with accidental
+                    // spelling.
+                    "notes": [
+                        {
+                            "step": "A",
+                            "alteration": -1,
+                            "octave": 2
+                        }
+                    ]
+                },
+                {
+                    "duration": "1",
+                    "pitches": [
+                        43,
+                        55
+                    ]
+                }
+            ]
+        },
+        // Second measure, treble choir, first layer (S1)
+        "8aa80d84-5b4d-45d7-93bd-224039fda77c": {
+            "part": "9d1cb340-9af5-4b4a-a54c-8ea5b1a6122c",
+            "measure": "31b9b741-0933-4758-bf99-a0fc519b6265",
+            "events": [
+                {
+                    "duration": "1",
+                    "pitches": [
+                        72
+                    ],
+                    "attachments": {
+                        "0": [
+                            "4f253e20-c44d-4ad6-957d-3ce9e0997673", // default fermata
+                            {
+                                "id": "3825b3cb-3aa1-4b6e-a193-8996970195b5",
+                                "params": {
+                                    "type": "stop",
+                                    "text": "men!",
+                                    "isMelisma": true
+                                }
+                            }
+                        ]
+                    },
+                    // Sample MIDI decrescendo using linear interpolation on CC7 of
+                    // channel 1 (defaults).
+                    "midiOuts": {
+                        "0": {
+                            "id": "712597b5-74ed-4b13-905d-ab26c5ef14de",
+                            "params": {
+                                "$from": 127,
+                                "$to": 32,
+                                // Scheduled interpolation duration extends past the
+                                // duration of this event, consuming the entire measure.
+                                "$fractionDuration": 1
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        // Second measure, Treble choir, second layer (S2)
+        "bf684d83-0032-47c6-8026-e5fb96ab3a82": {
+            "part": "6c096481-6db0-4943-abb1-871ab2379351",
+            "measure": "31b9b741-0933-4758-bf99-a0fc519b6265",
+            // "Events" can actually host both ad-hoc `event` instances and ad-hoc
+            // `eventGroup` instances (for tuplets, beaming or various other purposes).
+            // These expose the `groupEvents` property, which holds the exact same
+            // structure that naturally goes under `events`.
+            // Groups can nest, especially for representing nested tuplets.
+            "events": [
+                // Tuplet: triplet of quarters (A-G-A), three quarters instead of two
+                {
+                    "kind": "tuplet",
+                    // The nominal number of tuplet beats, e.g. `3` in an eights triplet.
+                    "numTupletBeats": 3,
+                    // The nominal duration of each tuplet beat, e.g. `1/8` in an eights triplet.
+                    "tupletBeatDuration": "1/4",
+                    // The nominal regular (corresponding) number of beats, e.g. `2` in an eights triplet.
+                    "numRegularBeats": 2,
+                    // Optional, usually omitted, usually same as `tupletBeatDuration`;
+                    // the nominal regular (corresponding) duration of each beat, e.g., `1/8` in an eights
+                    // triplet.
+                    "regularBeatDuration": "1/4",
+                    // Inside of an event group, events evolve the same as outside. Some group types
+                    // override the reported total duration of the group (e.g., here: 
+                    // numRegularBeats * regularBeatDuration = two quarters), while others don't
+                    // (e.g., "beam" groups, which exist for defining/overriding how notes should be
+                    // beamed together in a measure.)
+                    "groupEvents": [
+                        {
+                            "duration": "1/4",
+                            "pitches": [
+                                69
+                            ]
+                        },
+                        {
+                            "duration": "1/4",
+                            "pitches": [
+                                67
+                            ]
+                        },
+                        {
+                            "duration": "1/4",
+                            "pitches": [
+                                69
+                            ]
+                        }
+                    ]
+                },
+                // Regular half note after the quarters triplet
+                {
+                    "duration": "1/2",
+                    "pitches": [
+                        75
+                    ],
+                    "attachments": {
+                        "0": "4f253e20-c44d-4ad6-957d-3ce9e0997673" // default fermata
+                    }
+                }
+            ]
+        },
+        // Second measure, treble choir, third layer (A)
+        "f96147a3-2f40-435b-ba3f-a8c0a697ec48": {
+            "part": "56307add-3987-4726-981e-1d4eaa969aff",
+            "measure": "31b9b741-0933-4758-bf99-a0fc519b6265",
+            "events": [
+                {
+                    "duration": "1",
+                    "pitches": [
+                        64
+                    ],
+                    "attachments": {
+                        "0": "4f253e20-c44d-4ad6-957d-3ce9e0997673" // default fermata
+                    }
+                }
+            ]
+        },
+        // Second measure, percussion
+        "8eedd90d-e4b9-4b39-a814-9c07a341097d": {
+            "part": "68955beb-3de6-46ae-841d-14dd0245d5ad",
+            "measure": "31b9b741-0933-4758-bf99-a0fc519b6265",
+            "events": [
+                // Rest of a half, to give percussionist time to let go the
+                // snare sticks and grab the cymbal.
+                {
+                    "duration": "1/2"
+                },
+                // The finale crash.
+                {
+                    "kind": "percussion",
+                    "setId": "57430f3a-8cff-4df8-9814-1c2f26821698",
+                    "duration": "1/2",
+                    // Trigger the clash cymbal.
+                    "strikes": [
+                        "X"
+                    ],
+                    "attachments": {
+                        "0": "4f253e20-c44d-4ad6-957d-3ce9e0997673" // default fermata
+                    }
+                }
+            ]
+        },
+        // Second measure, piano, layer 1 (on right-hand staff)
+        "8d14e96b-24bf-41da-94d2-be9f9269c685": {
+            "part": "e448d7a8-171d-421f-9042-f93b79dd8f15",
+            "measure": "31b9b741-0933-4758-bf99-a0fc519b6265",
+            "events": [
+                {
+                    "duration": "1",
+                    "pitches": [
+                        64,
+                        65,
+                        72
+                    ],
+                    "attachments": {
+                        "0": "4f253e20-c44d-4ad6-957d-3ce9e0997673" // default fermata
+                    }
+                }
+            ]
+        },
+        // Second measure, piano, layer 3 (first on left-hand staff)
+        "6c884b35-3a0b-41a5-9b6b-b727282d092a": {
+            "part": "fa72a79a-6a88-4a66-bb43-c8ba4576062a",
+            "measure": "31b9b741-0933-4758-bf99-a0fc519b6265",
+            "events": [
+                {
+                    "duration": "1",
+                    "pitches": [
+                        48,
+                        60
+                    ],
+                    "attachments": {
+                        "0": "4f253e20-c44d-4ad6-957d-3ce9e0997673" // default fermata
+                    }
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,38 @@
+{
+  "$schema": "../../schemas/v1/score.schema.json",
+  "$$docInfo": { "version": "1.0.0" },
+  "$definitions": {
+    "parts": {
+      "7c7bf38b-9b5e-4a5b-8d2a-4a0c9f8a5a01": { "partName": "Percussion", "clefs": ["perc"] }
+    },
+    "percussionSets": {
+      "0a5a9b55-3a2a-4e6d-9d26-3c1f1b2d5f20": {
+        "name": "Small set",
+        "description": "Snare + Splash",
+        "combos": [
+          { "name": "Snare", "shortcut": "D", "pitches": [38], "staffPosition": 3, "hasUpStem": true },
+          { "name": "Splash", "shortcut": "X", "pitches": [55], "staffPosition": -4 }
+        ]
+      }
+    }
+  },
+  "$instances": {
+    "parts": {
+      "5f7a9a66-9f5d-4d5f-8d0a-6b8ea4b2d1f1": { "type": "7c7bf38b-9b5e-4a5b-8d2a-4a0c9f8a5a01" }
+    },
+    "measures": {
+      "b5d2b3a4-6c7d-4e8f-9a01-23456789abcd": { "duration": "1/1" }
+    }
+  },
+  "$lists": { "parts": ["5f7a9a66-9f5d-4d5f-8d0a-6b8ea4b2d1f1"], "measures": ["b5d2b3a4-6c7d-4e8f-9a01-23456789abcd"] },
+  "scoreInfo": { "title": "Perc Demo" },
+  "musicSpans": {
+    "bd8a7d44-29b5-4b8d-8f50-9d1a2c3e4f5a": {
+      "part": "5f7a9a66-9f5d-4d5f-8d0a-6b8ea4b2d1f1",
+      "measure": "b5d2b3a4-6c7d-4e8f-9a01-23456789abcd",
+      "events": [
+        { "kind": "percussion", "setId": "0a5a9b55-3a2a-4e6d-9d26-3c1f1b2d5f20", "duration": "1/1", "strikes": ["D","D","X"] }
+      ]
+    }
+  }
+}
