@@ -5,8 +5,7 @@
         "RegularEvent": {
             "type": "object",
             "required": [
-                "duration",
-                "pitches"
+                "duration"
             ],
             "properties": {
                 "kind": {
@@ -155,7 +154,8 @@
                 "numTupletBeats",
                 "numRegularBeats",
                 "tupletBeatDuration",
-                "regularBeatDuration"
+                "regularBeatDuration",
+                "groupEvents"
             ],
             "properties": {
                 "kind": {
@@ -176,30 +176,7 @@
                 },
                 "regularBeatDuration": {
                     "$ref": "./common.schema.json#/definitions/Fraction"
-                }
-            },
-            "additionalProperties": false
-        },
-        "BeamGroup": {
-            "type": "object",
-            "properties": {
-                "kind": {
-                    "const": "beam"
-                }
-            },
-            "additionalProperties": false
-        },
-        "EventGroup": {
-            "type": "object",
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/TupletGroup"
                 },
-                {
-                    "$ref": "#/definitions/BeamGroup"
-                }
-            ],
-            "properties": {
                 "groupEvents": {
                     "type": "array",
                     "items": {
@@ -215,10 +192,41 @@
                     "minItems": 1
                 }
             },
-            "required": [
-                "groupEvents"
-            ],
             "additionalProperties": false
+        },
+        "BeamGroup": {
+            "type": "object",
+            "properties": {
+                "kind": {
+                    "const": "beam"
+                },
+                "groupEvents": {
+                    "type": "array",
+                    "items": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/definitions/Event"
+                            },
+                            {
+                                "$ref": "#/definitions/EventGroup"
+                            }
+                        ]
+                    },
+                    "minItems": 1
+                }
+            },
+            "required": ["kind", "groupEvents"],
+            "additionalProperties": false
+        },
+        "EventGroup": {
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/TupletGroup"
+                },
+                {
+                    "$ref": "#/definitions/BeamGroup"
+                }
+            ]
         },
         "RegularSpan": {
             "type": "object",
@@ -262,6 +270,9 @@
             "properties": {
                 "kind": {
                     "const": "multiRest"
+                },
+                "part": {
+                    "$ref": "./common.schema.json#/definitions/Uuid"
                 },
                 "fromMeasure": {
                     "$ref": "./common.schema.json#/definitions/Uuid"

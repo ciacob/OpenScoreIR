@@ -1,17 +1,41 @@
 {
   "$schema": "../../schemas/v1/score.schema.json",
-  "$$docInfo": { "version": "1.0.0" },
+  "$$docInfo": {
+    "version": "1.0.0"
+  },
   "$definitions": {
-    "parts": { "2d0e3da6-3e8f-4c0a-8077-5a6f0d4f8a77": { "partName": "Soprano", "clefs": ["G"] } }
+    "parts": {
+      "2d0e3da6-3e8f-4c0a-8077-5a6f0d4f8a77": {
+        "partName": "Soprano",
+        "clefs": [
+          "G"
+        ]
+      }
+    }
   },
   "$instances": {
     "parts": {
-      "2d5b6b6b-1c1e-4f7f-9d2e-1a2b3c4d5e6f": { "type": "2d0e3da6-3e8f-4c0a-8077-5a6f0d4f8a77" }
+      "2d5b6b6b-1c1e-4f7f-9d2e-1a2b3c4d5e6f": {
+        "type": "2d0e3da6-3e8f-4c0a-8077-5a6f0d4f8a77"
+      }
     },
-    "measures": { "40b8f9aa-ec02-4a0f-8f85-3f7eaa0e5b34": { "duration": "1/1" } }
+    "measures": {
+      "40b8f9aa-ec02-4a0f-8f85-3f7eaa0e5b34": {
+        "duration": "1/1"
+      }
+    }
   },
-  "$lists": { "parts": ["2d5b6b6b-1c1e-4f7f-9d2e-1a2b3c4d5e6f"], "measures": ["40b8f9aa-ec02-4a0f-8f85-3f7eaa0e5b34"] },
-  "scoreInfo": { "title": "Tuplets" },
+  "$lists": {
+    "parts": [
+      "2d5b6b6b-1c1e-4f7f-9d2e-1a2b3c4d5e6f"
+    ],
+    "measures": [
+      "40b8f9aa-ec02-4a0f-8f85-3f7eaa0e5b34"
+    ]
+  },
+  "scoreInfo": {
+    "title": "Tuplets"
+  },
   "musicSpans": {
     "7f41f3fd-7ac0-49c7-a28c-017f3a8d67b1": {
       "part": "2d5b6b6b-1c1e-4f7f-9d2e-1a2b3c4d5e6f",
@@ -24,12 +48,32 @@
           "tupletBeatDuration": "1/4",
           "regularBeatDuration": "1/4",
           "groupEvents": [
-            { "duration": "1/4", "pitches": [69] },
-            { "duration": "1/4", "pitches": [67] },
-            { "duration": "1/4", "pitches": [69] }
+            {
+              "duration": "1/4",
+              "pitches": [
+                69
+              ]
+            },
+            {
+              "duration": "1/4",
+              "pitches": [
+                67
+              ]
+            },
+            {
+              "duration": "1/4",
+              "pitches": [
+                69
+              ]
+            }
           ]
         },
-        { "duration": "1/2", "pitches": [72] }
+        {
+          "duration": "1/2",
+          "pitches": [
+            72
+          ]
+        }
       ]
     }
   }

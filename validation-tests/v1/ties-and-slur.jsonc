@@ -1,42 +1,115 @@
 {
   "$schema": "../../schemas/v1/score.schema.json",
-  "$$docInfo": { "version": "1.0.0" },
+  "$$docInfo": {
+    "version": "1.0.0"
+  },
   "$definitions": {
-    "parts": { "violin-def": { "partName": "Violin", "clefs": ["G"] } },
+    "parts": {
+      "bd186662-254f-4072-a9d8-5680e0204590": {
+        "partName": "Violin",
+        "clefs": [
+          "G"
+        ]
+      }
+    },
     "attachments": {
-      "tie-attach": { "name": "tie", "description": "ties forward", "hosts": ["events","pitches"] },
-      "slur-attach": {
-        "name": "slur", "description": "legato",
-        "hosts": ["events","pitches"],
-        "params": { "type": { "kind": "enum", "values": [ { "label":"start","value":1 }, { "label":"end","value":0 } ] } }
+      "91296836-fe2b-42fd-bd5a-c8ff361bdfc2": {
+        "name": "tie",
+        "description": "ties forward",
+        "hosts": [
+          "events",
+          "pitches"
+        ]
+      },
+      "8ba58b1b-2b57-4d84-b27b-b6121bb04500": {
+        "name": "slur",
+        "description": "legato",
+        "hosts": [
+          "events",
+          "pitches"
+        ],
+        "params": {
+          "type": {
+            "kind": "enum",
+            "values": [
+              {
+                "label": "start",
+                "value": 1
+              },
+              {
+                "label": "end",
+                "value": 0
+              }
+            ]
+          }
+        }
       }
     }
   },
   "$instances": {
-    "parts": { "violin-1": { "type": "violin-def" } },
-    "measures": { "m-01": { "duration": "1/1" } }
+    "parts": {
+      "ef59d273-a28e-4832-ba8f-f1d1ba4283dc": {
+        "type": "bd186662-254f-4072-a9d8-5680e0204590"
+      }
+    },
+    "measures": {
+      "a679954a-cde0-4695-8553-92f08c16aa11": {
+        "duration": "1/1"
+      }
+    }
   },
-  "$lists": { "parts": ["violin-1"], "measures": ["m-01"] },
-  "scoreInfo": { "title": "Ties & Slur" },
+  "$lists": {
+    "parts": [
+      "ef59d273-a28e-4832-ba8f-f1d1ba4283dc"
+    ],
+    "measures": [
+      "a679954a-cde0-4695-8553-92f08c16aa11"
+    ]
+  },
+  "scoreInfo": {
+    "title": "Ties & Slur"
+  },
   "musicSpans": {
-    "span-v1": {
-      "part": "violin-1",
-      "measure": "m-01",
+    "c89cf25f-ab50-4e34-8aee-3968414f3ddc": {
+      "part": "ef59d273-a28e-4832-ba8f-f1d1ba4283dc",
+      "measure": "a679954a-cde0-4695-8553-92f08c16aa11",
       "events": [
         {
           "duration": "1/2",
-          "pitches": [62, 65, 67, 71],
+          "pitches": [
+            62,
+            65,
+            67,
+            71
+          ],
           "attachments": {
-            "62": "tie-attach",
-            "65": "tie-attach",
-            "67": "tie-attach",
-            "71": { "id": "slur-attach", "params": { "type": 1 } }
+            "62": "91296836-fe2b-42fd-bd5a-c8ff361bdfc2",
+            "65": "91296836-fe2b-42fd-bd5a-c8ff361bdfc2",
+            "67": "91296836-fe2b-42fd-bd5a-c8ff361bdfc2",
+            "71": {
+              "id": "8ba58b1b-2b57-4d84-b27b-b6121bb04500",
+              "params": {
+                "type": 1
+              }
+            }
           }
         },
         {
           "duration": "1/2",
-          "pitches": [62, 65, 67, 72],
-          "attachments": { "72": { "id": "slur-attach", "params": { "type": 0 } } }
+          "pitches": [
+            62,
+            65,
+            67,
+            72
+          ],
+          "attachments": {
+            "72": {
+              "id": "8ba58b1b-2b57-4d84-b27b-b6121bb04500",
+              "params": {
+                "type": 0
+              }
+            }
+          }
         }
       ]
     }

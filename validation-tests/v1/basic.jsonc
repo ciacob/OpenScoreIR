@@ -5,38 +5,38 @@
   },
   "$definitions": {
     "parts": {
-      "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa": {
+      "fda835f3-185e-44c9-a64a-3b96962f8807": {
         "partName": "Piano"
       }
     }
   },
   "$instances": {
     "parts": {
-      "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb": {
-        "type": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+      "de37b423-4ccb-40d5-b970-4222b85630f8": {
+        "type": "fda835f3-185e-44c9-a64a-3b96962f8807"
       }
     },
     "measures": {
-      "cccccccc-cccc-4ccc-8ccc-cccccccccccc": {
+      "43e9c768-684c-42c0-8268-350b14f4cff1": {
         "duration": "1/1"
       }
     }
   },
   "$lists": {
     "parts": [
-      "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"
+      "de37b423-4ccb-40d5-b970-4222b85630f8"
     ],
     "measures": [
-      "cccccccc-cccc-4ccc-8ccc-cccccccccccc"
+      "43e9c768-684c-42c0-8268-350b14f4cff1"
     ]
   },
   "scoreInfo": {
     "title": "Hello"
   },
   "musicSpans": {
-    "dddddddd-dddd-4ddd-8ddd-dddddddddddd": {
-      "part": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
-      "measure": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+    "03b783b9-9840-414d-911d-8e7845a3d6d4": {
+      "part": "de37b423-4ccb-40d5-b970-4222b85630f8",
+      "measure": "43e9c768-684c-42c0-8268-350b14f4cff1",
       "events": [
         {
           "duration": "1/1",

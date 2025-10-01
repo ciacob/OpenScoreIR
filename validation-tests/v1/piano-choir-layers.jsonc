@@ -1,29 +1,161 @@
 {
   "$schema": "../../schemas/v1/score.schema.json",
-  "$$docInfo": { "version": "1.0.0" },
+  "$$docInfo": {
+    "version": "1.0.0"
+  },
   "$definitions": {
     "parts": {
-      "part-choir-def": { "partName": "Choir", "staffNames": ["S1","S2","A"], "clefs": ["G"], "twoLayersPerStaff": false },
-      "part-pno-def": { "partName": "Piano", "staffType": "grand", "staffNames": ["R.H.","L.H."], "clefs": ["G","F"] }
+      "07ed30d4-868f-4d30-81b8-5f3980b2e111": {
+        "partName": "Choir",
+        "staffNames": [
+          "S1",
+          "S2",
+          "A"
+        ],
+        "clefs": [
+          "G"
+        ],
+        "twoLayersPerStaff": false
+      },
+      "4746a95d-6cd6-4f4a-9693-0c09b38eb871": {
+        "partName": "Piano",
+        "staffType": "grand",
+        "staffNames": [
+          "R.H.",
+          "L.H."
+        ],
+        "clefs": [
+          "G",
+          "F"
+        ]
+      }
     }
   },
   "$instances": {
     "parts": {
-      "choir-s1": { "type": "part-choir-def", "index": 1, "layer": 1 },
-      "choir-s2": { "type": "part-choir-def", "index": 1, "layer": 2 },
-      "choir-a": { "type": "part-choir-def", "index": 1, "layer": 3 },
-      "pno-rh": { "type": "part-pno-def", "index": 1, "layer": 1 },
-      "pno-lh": { "type": "part-pno-def", "index": 1, "layer": 3 }
+      "e6a224f8-7eb8-4506-99a1-88c647b17f3e": {
+        "type": "07ed30d4-868f-4d30-81b8-5f3980b2e111",
+        "index": 1,
+        "layer": 1
+      },
+      "8560c75a-7d54-4741-a7d7-0a86ff785c92": {
+        "type": "07ed30d4-868f-4d30-81b8-5f3980b2e111",
+        "index": 1,
+        "layer": 2
+      },
+      "c9a418b0-3fa6-4519-8c44-b09ced89b125": {
+        "type": "07ed30d4-868f-4d30-81b8-5f3980b2e111",
+        "index": 1,
+        "layer": 3
+      },
+      "c2232e98-c0e7-4410-8097-ceb8a9cd9e28": {
+        "type": "4746a95d-6cd6-4f4a-9693-0c09b38eb871",
+        "index": 1,
+        "layer": 1
+      },
+      "d971623d-1a97-4bc2-a1ba-cb141c1db329": {
+        "type": "4746a95d-6cd6-4f4a-9693-0c09b38eb871",
+        "index": 1,
+        "layer": 3
+      }
     },
-    "measures": { "meas-001": { "duration": "1/1" } }
+    "measures": {
+      "8a6e71d5-a8ff-4f7d-9fba-c99f46cdf109": {
+        "duration": "1/1"
+      }
+    }
   },
-  "$lists": { "parts": ["choir-s1","choir-s2","choir-a","pno-rh","pno-lh"], "measures": ["meas-001"] },
-  "scoreInfo": { "title": "Piano + Choir" },
+  "$lists": {
+    "parts": [
+      "e6a224f8-7eb8-4506-99a1-88c647b17f3e",
+      "8560c75a-7d54-4741-a7d7-0a86ff785c92",
+      "c9a418b0-3fa6-4519-8c44-b09ced89b125",
+      "c2232e98-c0e7-4410-8097-ceb8a9cd9e28",
+      "d971623d-1a97-4bc2-a1ba-cb141c1db329"
+    ],
+    "measures": [
+      "8a6e71d5-a8ff-4f7d-9fba-c99f46cdf109"
+    ]
+  },
+  "scoreInfo": {
+    "title": "Piano + Choir"
+  },
   "musicSpans": {
-    "s1": { "part": "choir-s1", "measure": "meas-001", "events": [ { "duration": "1/2", "pitches": [71] }, { "duration": "1/2", "pitches": [72] } ] },
-    "s2": { "part": "choir-s2", "measure": "meas-001", "events": [ { "duration": "1/1", "pitches": [67] } ] },
-    "a":  { "part": "choir-a",  "measure": "meas-001", "events": [ { "duration": "1/2", "pitches": [65] }, { "duration": "1/2", "pitches": [64] } ] },
-    "pno-r": { "part": "pno-rh", "measure": "meas-001", "events": [ { "duration": "1/1", "pitches": [62,65,67,71] } ] },
-    "pno-l": { "part": "pno-lh", "measure": "meas-001", "events": [ { "duration": "1/1", "pitches": [43,55] } ] }
+    "9908623b-55f5-44d5-af16-7816844fe801": {
+      "part": "e6a224f8-7eb8-4506-99a1-88c647b17f3e",
+      "measure": "8a6e71d5-a8ff-4f7d-9fba-c99f46cdf109",
+      "events": [
+        {
+          "duration": "1/2",
+          "pitches": [
+            71
+          ]
+        },
+        {
+          "duration": "1/2",
+          "pitches": [
+            72
+          ]
+        }
+      ]
+    },
+    "158caa6e-2dca-4e70-a7a9-135dea24a5e1": {
+      "part": "8560c75a-7d54-4741-a7d7-0a86ff785c92",
+      "measure": "8a6e71d5-a8ff-4f7d-9fba-c99f46cdf109",
+      "events": [
+        {
+          "duration": "1/1",
+          "pitches": [
+            67
+          ]
+        }
+      ]
+    },
+    "fcee1403-0763-4db4-b276-67c8dd47f837": {
+      "part": "c9a418b0-3fa6-4519-8c44-b09ced89b125",
+      "measure": "8a6e71d5-a8ff-4f7d-9fba-c99f46cdf109",
+      "events": [
+        {
+          "duration": "1/2",
+          "pitches": [
+            65
+          ]
+        },
+        {
+          "duration": "1/2",
+          "pitches": [
+            64
+          ]
+        }
+      ]
+    },
+    "5850e94c-d09d-4992-bebe-a137efe626c5": {
+      "part": "c2232e98-c0e7-4410-8097-ceb8a9cd9e28",
+      "measure": "8a6e71d5-a8ff-4f7d-9fba-c99f46cdf109",
+      "events": [
+        {
+          "duration": "1/1",
+          "pitches": [
+            62,
+            65,
+            67,
+            71
+          ]
+        }
+      ]
+    },
+    "7aeaaaad-ac85-4991-ad6a-dcd1b971630d": {
+      "part": "d971623d-1a97-4bc2-a1ba-cb141c1db329",
+      "measure": "8a6e71d5-a8ff-4f7d-9fba-c99f46cdf109",
+      "events": [
+        {
+          "duration": "1/1",
+          "pitches": [
+            43,
+            55
+          ]
+        }
+      ]
+    }
   }
 }

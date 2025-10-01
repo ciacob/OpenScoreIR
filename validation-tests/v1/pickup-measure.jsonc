@@ -1,18 +1,78 @@
 {
   "$schema": "../../schemas/v1/score.schema.json",
-  "$$docInfo": { "version": "1.0.0" },
-  "$definitions": { "parts": { "c0011223-4455-4666-8777-8899aabbccdd": { "partName": "Flute", "clefs": ["G"] } } },
-  "$instances": {
-    "parts": { "p-1234abcd-0000-4000-8000-000000000000": { "type": "c0011223-4455-4666-8777-8899aabbccdd" } },
-    "measures": {
-      "m-pu-1": { "duration": "1/4", "timeSignature": [4,4], "measureKind": "pickup" },
-      "m-1": { "duration": "1/1", "timeSignature": [4,4] }
+  "$$docInfo": {
+    "version": "1.0.0"
+  },
+  "$definitions": {
+    "parts": {
+      "2d9b2bda-0390-487b-9919-905d0ed0b6cb": {
+        "partName": "Flute",
+        "clefs": [
+          "G"
+        ]
+      }
     }
   },
-  "$lists": { "parts": ["p-1234abcd-0000-4000-8000-000000000000"], "measures": ["m-pu-1","m-1"] },
-  "scoreInfo": { "title": "Pickup" },
+  "$instances": {
+    "parts": {
+      "1773e02e-90f8-4f6d-b6a6-d0f0e68b8e0f": {
+        "type": "2d9b2bda-0390-487b-9919-905d0ed0b6cb"
+      }
+    },
+    "measures": {
+      "c8e2836b-2c6d-4e2f-8e27-b0a3e55df568": {
+        "duration": "1/4",
+        "timeSignature": [
+          4,
+          4
+        ],
+        "measureKind": "pickup"
+      },
+      "dc7803bb-0763-4006-bd32-f3dd03e20cdb": {
+        "duration": "1/1",
+        "timeSignature": [
+          4,
+          4
+        ]
+      }
+    }
+  },
+  "$lists": {
+    "parts": [
+      "1773e02e-90f8-4f6d-b6a6-d0f0e68b8e0f"
+    ],
+    "measures": [
+      "c8e2836b-2c6d-4e2f-8e27-b0a3e55df568",
+      "dc7803bb-0763-4006-bd32-f3dd03e20cdb"
+    ]
+  },
+  "scoreInfo": {
+    "title": "Pickup"
+  },
   "musicSpans": {
-    "span-pu": { "part": "p-1234abcd-0000-4000-8000-000000000000", "measure": "m-pu-1", "events": [ { "duration": "1/4", "pitches": [76] } ] },
-    "span-1": { "part": "p-1234abcd-0000-4000-8000-000000000000", "measure": "m-1", "events": [ { "duration": "1/1", "pitches": [74] } ] }
+    "72476c1a-c371-414a-873d-aa63140b67d8": {
+      "part": "1773e02e-90f8-4f6d-b6a6-d0f0e68b8e0f",
+      "measure": "c8e2836b-2c6d-4e2f-8e27-b0a3e55df568",
+      "events": [
+        {
+          "duration": "1/4",
+          "pitches": [
+            76
+          ]
+        }
+      ]
+    },
+    "e0c95fbf-4449-4b58-867b-6afcc35da6bb": {
+      "part": "1773e02e-90f8-4f6d-b6a6-d0f0e68b8e0f",
+      "measure": "dc7803bb-0763-4006-bd32-f3dd03e20cdb",
+      "events": [
+        {
+          "duration": "1/1",
+          "pitches": [
+            74
+          ]
+        }
+      ]
+    }
   }
 }

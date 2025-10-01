@@ -1,41 +1,96 @@
 {
   "$schema": "../../schemas/v1/score.schema.json",
-  "$$docInfo": { "version": "1.0.0" },
+  "$$docInfo": {
+    "version": "1.0.0"
+  },
   "$definitions": {
-    "parts": { "6f3e7f7d-9a5a-4c0c-8f1e-7a6b2c5d8e91": { "partName": "Soprano" } },
+    "parts": {
+      "6f3e7f7d-9a5a-4c0c-8f1e-7a6b2c5d8e91": {
+        "partName": "Soprano"
+      }
+    },
     "attachments": {
-      "a1a1a1a1-a1a1-4a1a-8a1a-a1a1a1a1a1a1": {
+      // The actual fermata symbol
+      "85964855-6d74-4fd7-bb82-8c200221a38b": {
         "name": "fermata",
         "description": "Lengthens duration",
-        "hosts": ["events"],
+        "hosts": [
+          "events"
+        ],
         "params": {
-          "duration": { "kind": "enum", "values": [
-            { "label": "short", "value": 1.3 },
-            { "label": "normal", "value": 1.6, "default": true },
-            { "label": "long", "value": 2.5 }
-          ] }
+          "duration": {
+            "kind": "enum",
+            "values": [
+              {
+                "label": "short",
+                "value": 1.3
+              },
+              {
+                "label": "normal",
+                "value": 1.6,
+                "default": true
+              },
+              {
+                "label": "long",
+                "value": 2.5
+              }
+            ]
+          }
         }
+      },
+      // An additional, "longa" text to be displayed next to it;
+      // (showcases attachments with no parameters).
+      "a0f7e618-1c21-41e6-ae72-346c4b308991": {
+        "name": "longa",
+        "description": "Static text `longa`.",
+        "hosts": [
+          "events"
+        ]
       }
     }
   },
   "$instances": {
-    "parts": { "9f9f9f9f-9f9f-4f9f-8f9f-9f9f9f9f9f9f": { "type": "6f3e7f7d-9a5a-4c0c-8f1e-7a6b2c5d8e91" } },
-    "measures": { "e1e1e1e1-e1e1-4e1e-8e1e-e1e1e1e1e1e1": { "duration": "1/1" } }
+    "parts": {
+      "7570f945-7da2-4885-8081-ea60ec86ced2": {
+        "type": "6f3e7f7d-9a5a-4c0c-8f1e-7a6b2c5d8e91"
+      }
+    },
+    "measures": {
+      "f0462d97-af5b-4553-9ea0-a9dad735f5ae": {
+        "duration": "1/1"
+      }
+    }
   },
-  "$lists": { "parts": ["9f9f9f9f-9f9f-4f9f-8f9f-9f9f9f9f9f9f"], "measures": ["e1e1e1e1-e1e1-4e1e-8e1e-e1e1e1e1e1e1"] },
-  "scoreInfo": { "title": "Fermata Attachments" },
+  "$lists": {
+    "parts": [
+      "7570f945-7da2-4885-8081-ea60ec86ced2"
+    ],
+    "measures": [
+      "f0462d97-af5b-4553-9ea0-a9dad735f5ae"
+    ]
+  },
+  "scoreInfo": {
+    "title": "Fermata Attachments"
+  },
   "musicSpans": {
-    "span-attach-0001": {
-      "part": "9f9f9f9f-9f9f-4f9f-8f9f-9f9f9f9f9f9f",
-      "measure": "e1e1e1e1-e1e1-4e1e-8e1e-e1e1e1e1e1e1",
+    "8c84da0d-4c5d-4bfd-9b16-f28326b2baca": {
+      "part": "7570f945-7da2-4885-8081-ea60ec86ced2",
+      "measure": "f0462d97-af5b-4553-9ea0-a9dad735f5ae",
       "events": [
         {
           "duration": "1/1",
-          "pitches": [72],
+          "pitches": [
+            72
+          ],
           "attachments": {
             "0": [
-              "a1a1a1a1-a1a1-4a1a-8a1a-a1a1a1a1a1a1",
-              { "id": "a1a1a1a1-a1a1-4a1a-8a1a-a1a1a1a1a1a1", "params": { "duration": "long" } }
+              {
+                "id": "85964855-6d74-4fd7-bb82-8c200221a38b",
+                "params": {
+                  "duration": "long"
+                }
+              },
+              "a0f7e618-1c21-41e6-ae72-346c4b308991"
             ]
           }
         }

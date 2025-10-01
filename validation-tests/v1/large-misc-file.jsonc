@@ -1,7 +1,7 @@
 {
-    "schema": "TBD",
+    "$schema": "../../schemas/v1/score.schema.json",
     "$$docInfo": {
-        "version": "1.0",
+        "version": "1.0.0",
         "release": "2025/09/19 18:21:12"
     },
     // Abstract, general entity types. They form the base of score instances,
@@ -64,7 +64,9 @@
             "3fc4afcf-0ea1-4a05-a4da-b2ad51fe6fd3": {
                 "partName": "Percussion",
                 "partAbbrev": "Perc.",
-                "clefs": "P" // "perc" is also legit
+                "clefs": [
+                    "P"
+                ] // "perc" is also legit
             },
             // A sample piano
             "373caf88-6a2a-4e8b-b343-d917149d98a8": {
@@ -258,7 +260,7 @@
                     "measures"
                 ],
                 "params": {
-                    "index": "uint"
+                    "index": "int"
                 }
             },
             // A sample, configurable text jump markings system (e.g., "D'al segno al coda").
@@ -435,8 +437,7 @@
                 "description": "Trigger timbral change via out of range notes.",
                 "hosts": [
                     "measures",
-                    "events",
-                    "attachments"
+                    "events"
                 ],
                 "params": {
                     "channel": {
@@ -473,8 +474,7 @@
                 "description": "Trigger timbral change via program (and bank) change.",
                 "hosts": [
                     "measures",
-                    "events",
-                    "attachments"
+                    "events"
                 ],
                 "params": {
                     "channel": {
@@ -524,8 +524,7 @@
                 "name": "hairpin",
                 "description": "Trigger continuous change in volume (and/or expression).",
                 "hosts": [
-                    "events",
-                    "attachments"
+                    "events"
                 ],
                 "params": {
                     "channel": {
@@ -647,8 +646,7 @@
                 "name": "glissando",
                 "description": "Bends from current pitch to another, with a head and tail.",
                 "hosts": [
-                    "events",
-                    "attachments"
+                    "events"
                 ],
                 "params": {
                     "channel": {
@@ -864,12 +862,14 @@
                 ],
                 // This is the minimum and recommended duration of the measure, as a fraction
                 // of the "whole" musical duration.
-                "duration": 1
+                "duration": "1/1"
             },
             "31b9b741-0933-4758-bf99-a0fc519b6265": {
-                "duration": 1,
-                "barline": "thin-thick"
-                // Other legit keys are: `keySignature`, `attachments`.
+                "duration": [
+                    1,
+                    1
+                ],
+                "barline": "section"
             }
         }
     },
@@ -916,7 +916,6 @@
             // `measure` and `events` obsolete, and require in-lieu `fromMeasure` and `toMeasure`,
             // both mandatory and holding measure instance ids. These are useful for representing
             // multi measure rests, usually in parts notation.
-
             "part": "9d1cb340-9af5-4b4a-a54c-8ea5b1a6122c",
             "measure": "bf867e95-7198-4b4a-8d15-a55613a56327",
             // An event is a cluster of 0, 1 or more pitches sustained
@@ -952,10 +951,6 @@
                             "octave": 4
                         }
                     ],
-                    // This is also optional and entirely redundant, as this can be cheaply inferred
-                    // from a missing/empty `pitches`. But, if an implementor feels like they need
-                    // to be explicitly signaling rests, the `isRest` flag _is_ available.
-                    "isRest": false,
                     // Can be omitted if not needed. 
                     "attachments": {
                         // By convention MIDI `0` is not used (would be rendered as a rest if used).
@@ -999,7 +994,7 @@
             "measure": "bf867e95-7198-4b4a-8d15-a55613a56327",
             "events": [
                 {
-                    "duration": "1",
+                    "duration": "1/1",
                     "pitches": [
                         67
                     ]
@@ -1033,7 +1028,7 @@
                 {
                     "kind": "percussion",
                     "setId": "57430f3a-8cff-4df8-9814-1c2f26821698",
-                    "duration": "1",
+                    "duration": "1/1",
                     // Trigger the snare. We'll make that snare roll via an attachment
                     "strikes": [
                         "D"
@@ -1142,7 +1137,7 @@
                     ]
                 },
                 {
-                    "duration": "1",
+                    "duration": "1/1",
                     "pitches": [
                         43,
                         55
@@ -1156,7 +1151,7 @@
             "measure": "31b9b741-0933-4758-bf99-a0fc519b6265",
             "events": [
                 {
-                    "duration": "1",
+                    "duration": "1/1",
                     "pitches": [
                         72
                     ],
@@ -1257,7 +1252,7 @@
             "measure": "31b9b741-0933-4758-bf99-a0fc519b6265",
             "events": [
                 {
-                    "duration": "1",
+                    "duration": "1/1",
                     "pitches": [
                         64
                     ],
@@ -1298,7 +1293,7 @@
             "measure": "31b9b741-0933-4758-bf99-a0fc519b6265",
             "events": [
                 {
-                    "duration": "1",
+                    "duration": "1/1",
                     "pitches": [
                         64,
                         65,
@@ -1316,7 +1311,7 @@
             "measure": "31b9b741-0933-4758-bf99-a0fc519b6265",
             "events": [
                 {
-                    "duration": "1",
+                    "duration": "1/1",
                     "pitches": [
                         48,
                         60
