@@ -186,6 +186,7 @@ or use an absolute URL if you prefer (we serve the schema via GitHub Pages):
   }
 }
 ```
+> N.B.: to represent rests, you entirely omit the `pitches` (and `notes`) properties.
 
 You find more examples in the `validation-tests` folder.
 
